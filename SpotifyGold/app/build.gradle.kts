@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.spotifygold"
+    namespace = "com.navarro.spotifygold"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.spotifygold"
+        applicationId = "com.navarro.spotifygold"
         minSdk = 29
         targetSdk = 34
         versionCode = 1
@@ -54,6 +54,9 @@ android {
 dependencies {
     val roomVersion = "2.6.1"
     val navVersion = "2.7.7"
+    val hiltVersion = "1.2.0"
+    val coilVersion= "2.6.0"
+    val iconsVersion = "1.6.7"
 
     implementation("androidx.core:core-ktx:1.13.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -78,4 +81,10 @@ dependencies {
 
     // NavHost
     implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    // Coil (Image loading)
+    implementation("io.coil-kt:coil-compose:$coilVersion")
+
+    // Icons
+    implementation("androidx.compose.material:material-icons-extended-android:$iconsVersion")
 }
