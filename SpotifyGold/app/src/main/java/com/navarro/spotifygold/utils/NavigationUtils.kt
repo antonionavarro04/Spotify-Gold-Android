@@ -6,5 +6,5 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 
 @Composable
 fun currentRoute(navController: NavHostController): String? {
-    return navController.currentBackStackEntryAsState()?.value?.destination?.route
+    return navController.currentBackStackEntryAsState().value?.destination?.route
 }

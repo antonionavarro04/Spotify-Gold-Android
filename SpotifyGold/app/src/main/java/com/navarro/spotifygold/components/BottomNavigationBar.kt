@@ -1,5 +1,6 @@
 package com.navarro.spotifygold.components
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.navarro.spotifygold.models.ItemsBottomNav
@@ -24,10 +26,11 @@ import com.navarro.spotifygold.utils.currentRoute
 
 @Composable
 fun BottomNavigationBar(
-    navController: NavHostController
+    navController: NavHostController,
+    context: Context = LocalContext.current
 ) {
     val icons = listOf(
-        ItemsBottomNav.Home, ItemsBottomNav.Search, ItemsBottomNav.Library
+        ItemsBottomNav.Home(context), ItemsBottomNav.Search(context), ItemsBottomNav.Library(context)
     )
     BottomAppBar(
         containerColor = BlackFaded,

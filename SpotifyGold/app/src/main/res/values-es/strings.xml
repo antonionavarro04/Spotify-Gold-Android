@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="and_navigation_library">Librería</string>
+    <string name="and_navigation_search">Buscar</string>
+    <string name="and_navigation_home">Inicio</string>
+    <string name="and_search_searchbox_placeholder">Que quieres escuchar hoy?</string>
+</resources>

@@ -16,9 +16,10 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Gold50,
+    secondary = Gold80,
+    tertiary = Gold30,
+    background = Black100,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -27,7 +28,6 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Pink40
 
     /* Other default colors to override
-    background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
     onPrimary = Color.White,
     onSecondary = Color.White,
@@ -39,9 +39,9 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun SpotifyGoldTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = true,
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

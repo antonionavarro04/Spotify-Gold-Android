@@ -14,7 +14,7 @@ fun SpotifyNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Navigation.HOME.name
+        startDestination = Navigation.SEARCH.name
     ) {
         composable(Navigation.HOME.name) {
             HomeScreen()

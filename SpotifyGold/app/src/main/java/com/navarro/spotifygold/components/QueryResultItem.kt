@@ -17,10 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.navarro.spotifygold.entities.AudioEntity
 
 @Composable
 fun QueryResultItem(
-
+    audioInfo: AudioEntity
 ) {
     Row(
         modifier = Modifier
@@ -36,7 +37,8 @@ fun QueryResultItem(
             AsyncImage(
                 model = "https://24ai.tech/en/wp-content/uploads/sites/3/2023/10/01_product_1_sdelat-izobrazhenie-1-1-5-scaled.jpg",
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize(1.0f)
+                modifier = Modifier
+                    .fillMaxSize(1.0f)
             )
         }
         Column (
@@ -46,35 +48,12 @@ fun QueryResultItem(
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Text(
-                text = "Adicto a ti"
+                text = audioInfo.title
             )
             Text(
-                text = "Song・Walter Olmos",
+                text = "Song・${audioInfo.author.name}",
                 color = Color.LightGray
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun ObjectsPreview() {
-    LazyColumn(content = {
-        listOf(
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9
-        ).forEach {
-            item {
-                QueryResultItem()
-            }
-        }
-    })
 }

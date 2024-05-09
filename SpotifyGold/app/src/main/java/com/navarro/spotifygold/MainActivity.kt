@@ -1,5 +1,8 @@
 package com.navarro.spotifygold
 
+import android.app.LocaleManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -17,13 +20,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.rememberNavController
 import com.navarro.spotifygold.components.BottomNavigationBar
 import com.navarro.spotifygold.navigation.SpotifyNavigation
+import com.navarro.spotifygold.ui.theme.Black100
 import com.navarro.spotifygold.ui.theme.SpotifyGoldTheme
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
 
+        setContent {
             val navController = rememberNavController()
             val context = LocalContext.current
             StaticToast.toast = Toast.makeText(context, "Undefined Toast", Toast.LENGTH_SHORT)
@@ -31,7 +36,7 @@ class MainActivity : ComponentActivity() {
             SpotifyGoldTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = Black100
                 ) {
                     Box {
                         MainScreen()
