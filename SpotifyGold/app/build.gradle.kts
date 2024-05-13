@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt") // Room
     id("com.google.devtools.ksp") // KSP
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31" // Serialization
 }
 
 android {
@@ -54,10 +55,8 @@ android {
 dependencies {
     val roomVersion = "2.6.1"
     val navVersion = "2.7.7"
-    val hiltVersion = "1.2.0"
     val coilVersion= "2.6.0"
     val iconsVersion = "1.6.7"
-    val coroutinesVersion = "1.7.3"
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -90,5 +89,12 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended-android:$iconsVersion")
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Json
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+
+    // Http Request
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
