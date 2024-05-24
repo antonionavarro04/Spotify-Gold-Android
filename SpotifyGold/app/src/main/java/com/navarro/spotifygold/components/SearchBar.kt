@@ -27,69 +27,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.navarro.spotifygold.R
 import com.navarro.spotifygold.StaticToast
+import com.navarro.spotifygold.dal.search
 import com.navarro.spotifygold.entities.DtoResultEntity
 import com.navarro.spotifygold.ui.theme.Black0
 import com.navarro.spotifygold.ui.theme.Black20
-import com.navarro.spotifygold.ui.theme.Black50
 import com.navarro.spotifygold.ui.theme.Black60
 import com.navarro.spotifygold.ui.theme.Black80
-import com.navarro.spotifygold.ui.theme.Black90
-import com.navarro.spotifygold.ui.theme.White100
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.IOException
-
-
-interface SearchCallBack {
-    fun onSuccess(audioList: List<DtoResultEntity>)
-    fun onFailure(error: String)
-}
-
-// Return will be a list of AudioEntity
-private fun search(
-    query: String,
-    callback: SearchCallBack
-) {
-    GlobalScope.launch(Dispatchers.IO) {
-        val timeStart = System.currentTimeMillis()
-        try {
-            val client = OkHttpClient()
-            val request = Request.Builder()
-                .url("https://spotifygold.azurewebsites.net/api/yt/search?query=$query&maxResults=50")
-                .build()
-
-            val response = client.newCall(request).execute()
-            val responseData = response.body?.string()
-
-            // Parse the response, with the help of kotlinx.serialization
-            if (response.isSuccessful) {
-                val audioList = Json.decodeFromString<List<DtoResultEntity>>(responseData!!)
-                withContext(Dispatchers.Main) {
-                    callback.onSuccess(audioList)
-                }
-            } else {
-                withContext(Dispatchers.Main) {
-                    callback.onFailure("Error: ${response.code} - ${response.message}")
-                }
-            }
-        } catch (e: IOException) {
-            Log.e("SearchScreen", "Error during network call: ${e.message}", e)
-            // Handle error (e.g., show error message)
-        }
-        Log.d("SearchScreen", "Time taken: ${System.currentTimeMillis() - timeStart}ms")
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
-    query: MutableState<String>,
-    list: SnapshotStateList<DtoResultEntity>
+    query: MutableState<String>, list: SnapshotStateList<DtoResultEntity>
 ) {
     TextField(
         value = query.value,
@@ -107,23 +55,20 @@ fun SearchBar(
         trailingIcon = {
             IconButton(
                 onClick = {
-                    search(
-                        query.value,
-                        object : SearchCallBack {
-                            override fun onSuccess(audioList: List<DtoResultEntity>) {
-                                list.clear()
+                    search(query.value, object : SearchCallBack {
+                        override fun onSuccess(audioList: List<DtoResultEntity>) {
+                            list.clear()
 
-                                for (audio in audioList) {
-                                    list.add(audio)
-                                }
-                            }
-
-                            override fun onFailure(error: String) {
-                                Log.e("SearchScreen", "Error: $error")
-                                StaticToast.showToast("Error: $error")
+                            for (audio in audioList) {
+                                list.add(audio)
                             }
                         }
-                    )
+
+                        override fun onFailure(error: String) {
+                            Log.e("SearchScreen", "Error: $error")
+                            StaticToast.showToast("Error: $error")
+                        }
+                    })
                 },
             ) {
                 Icon(
@@ -145,8 +90,7 @@ fun SearchBar(
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text, imeAction = ImeAction.Search
         ),
-        keyboardActions = KeyboardActions(
-            onSearch = {
+        keyboardActions = KeyboardActions(onSearch = {
             StaticToast.showToast(query.value)
         }),
     )

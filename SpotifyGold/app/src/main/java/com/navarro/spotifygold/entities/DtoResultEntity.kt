@@ -1,9 +1,11 @@
 package com.navarro.spotifygold.entities
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 
+@Immutable
 @Serializable
 data class DtoResultEntity(
     val id: String,
