@@ -1,6 +1,5 @@
 package com.navarro.spotifygold.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,8 +15,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -26,9 +25,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.navarro.spotifygold.R
-import com.navarro.spotifygold.StaticToast
-import com.navarro.spotifygold.dal.search
-import com.navarro.spotifygold.entities.DtoResultEntity
 import com.navarro.spotifygold.ui.theme.Black0
 import com.navarro.spotifygold.ui.theme.Black20
 import com.navarro.spotifygold.ui.theme.Black60
@@ -37,39 +33,29 @@ import com.navarro.spotifygold.ui.theme.Black80
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
-    query: MutableState<String>, list: SnapshotStateList<DtoResultEntity>
+    query: MutableState<String>,
+    isFocused: MutableState<Boolean>,
+    onSearch: () -> Unit
 ) {
     TextField(
         value = query.value,
         onValueChange = { query.value = it },
         placeholder = {
             Text(
-                text = stringResource(id = R.string.and_search_searchbox_placeholder),
+                text = stringResource(id = R.string.search_searchbox_placeholder),
                 color = Black60,
             )
         },
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Transparent),
+            .background(Color.Transparent)
+            .onFocusChanged { focusState ->
+                isFocused.value = focusState.isFocused
+            },
         textStyle = TextStyle(color = Black20, fontSize = 18.sp),
         trailingIcon = {
             IconButton(
-                onClick = {
-                    search(query.value, object : SearchCallBack {
-                        override fun onSuccess(audioList: List<DtoResultEntity>) {
-                            list.clear()
-
-                            for (audio in audioList) {
-                                list.add(audio)
-                            }
-                        }
-
-                        override fun onFailure(error: String) {
-                            Log.e("SearchScreen", "Error: $error")
-                            StaticToast.showToast("Error: $error")
-                        }
-                    })
-                },
+                onClick = onSearch
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -91,7 +77,7 @@ fun SearchBar(
             keyboardType = KeyboardType.Text, imeAction = ImeAction.Search
         ),
         keyboardActions = KeyboardActions(onSearch = {
-            StaticToast.showToast(query.value)
-        }),
+            onSearch()
+        })
     )
 }

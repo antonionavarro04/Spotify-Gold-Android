@@ -11,5 +11,8 @@ data class DtoResultEntity(
     val id: String,
     val title: String,
     val authorName: String,
-    val thumbnail: String
+    val thumbnail: String,
+    val duration: Long,
+    val views: Long,
+    val likes: Long,
 )

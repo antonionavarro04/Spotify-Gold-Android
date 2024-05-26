@@ -2,8 +2,20 @@
     <string name="app_name" translatable="false">Spotify Gold</string>
 
     <!--  Nav Bar  -->
-    <string name="and_navigation_home">Home</string>
-    <string name="and_navigation_library">Library</string>
-    <string name="and_navigation_search">Search</string>
-    <string name="and_search_searchbox_placeholder">What do you want to listen to?</string>
+    <string name="navigation_home">Home</string>
+    <string name="navigation_library">Library</string>
+    <string name="navigation_search">Search</string>
+    <string name="search_searchbox_placeholder">What do you want to listen to?</string>
+    <string name="search_searchbox_no_results">No Results Found</string>
+
+    <string name="download_saved_successfully">Song Saved Succesfully!!!</string>
+
+    <string name="global_song">Song</string>
+    <string name="global_artist">Artist</string>
+    <string name="global_album">Album</string>
+    <string name="global_duration">Duration</string>
+    <string name="global_download">Download</string>
+    <string name="global_delete">Delete</string>
+    <string name="global_no_results">No Results</string>
+    <string name="global_no_internet">No Internet Connection</string>
 </resources>

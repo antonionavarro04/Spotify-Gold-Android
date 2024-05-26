@@ -1,6 +1,7 @@
 package com.navarro.spotifygold.views
 
 import RequestStoragePermission
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +35,9 @@ import com.navarro.spotifygold.R
 import com.navarro.spotifygold.StaticToast
 import com.navarro.spotifygold.components.QueryResultItem
 import com.navarro.spotifygold.components.SearchBar
+import com.navarro.spotifygold.components.SearchCallBack
 import com.navarro.spotifygold.dal.downloadSong
+import com.navarro.spotifygold.dal.search
 import com.navarro.spotifygold.entities.DtoResultEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,11 +45,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SearchScreen() {
+    val context = LocalContext.current
+
     val query = remember { mutableStateOf("") }
     val audioList = remember { mutableStateListOf<DtoResultEntity>() }
     var currentAudioInfo by remember { mutableStateOf<DtoResultEntity?>(null) }
     var requestPermission by remember { mutableStateOf(false) }
-    val context = LocalContext.current
+    val isTextBoxFocused = remember { mutableStateOf(false) }
+    var hasSearched by remember { mutableStateOf(false) }
 
     val coroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -71,27 +78,29 @@ fun SearchScreen() {
             .fillMaxSize()
             .padding(20.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
-            modifier = Modifier
-                .height(60.dp)
-                .fillMaxWidth()
-        ) {
-            AsyncImage(
-                model = "https://spotifygold.azurewebsites.net/favicon.ico",
-                contentDescription = null,
+        if (!isTextBoxFocused.value) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier
-                    .size(40.dp)
-                    .fillMaxWidth(0.2f)
-                    .clip(CircleShape)
-            )
-            Text(
-                text = stringResource(id = R.string.and_navigation_search),
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
+                    .height(60.dp)
+                    .fillMaxWidth()
+            ) {
+                AsyncImage(
+                    model = "https://spotifygold.azurewebsites.net/favicon.ico",
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .fillMaxWidth(0.2f)
+                        .clip(CircleShape)
+                )
+                Text(
+                    text = stringResource(id = R.string.navigation_search),
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -101,8 +110,26 @@ fun SearchScreen() {
                 .fillMaxWidth()
         ) {
             SearchBar(
-                query = query, list = audioList
-            )
+                query = query,
+                isFocused = isTextBoxFocused,
+            ) {
+                search(query.value, object : SearchCallBack {
+                    override fun onSuccess(newAudioList: List<DtoResultEntity>) {
+                        audioList.clear()
+
+                        for (audio in newAudioList) {
+                            audioList.add(audio)
+                        }
+
+                        hasSearched = true
+                    }
+
+                    override fun onFailure(error: String) {
+                        Log.e("SearchScreen", "Error: $error")
+                        StaticToast.showToast("Error: $error")
+                    }
+                })
+            }
         }
         Spacer(modifier = Modifier.height(20.dp))
         LazyColumn(

@@ -9,7 +9,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import com.navarro.spotifygold.R
 import com.navarro.spotifygold.navigation.Navigation
 
@@ -22,21 +21,21 @@ sealed class ItemsBottomNav (
     class Home(context: Context) : ItemsBottomNav(
         Icons.Filled.Home,
         Icons.Outlined.Home,
-        context.getString(R.string.and_navigation_home),
+        context.getString(R.string.navigation_home),
         Navigation.HOME.name
     )
 
     class Search(context: Context) : ItemsBottomNav(
         Icons.Filled.SavedSearch,
         Icons.Outlined.Search,
-        context.getString(R.string.and_navigation_search),
+        context.getString(R.string.navigation_search),
         Navigation.SEARCH.name
     )
 
     class Library(context: Context) : ItemsBottomNav(
         Icons.Filled.LibraryMusic,
         Icons.Outlined.LibraryMusic,
-        context.getString(R.string.and_navigation_library),
+        context.getString(R.string.navigation_library),
         Navigation.LIBRARY.name
     )
 }

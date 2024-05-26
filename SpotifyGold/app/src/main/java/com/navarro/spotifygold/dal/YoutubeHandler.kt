@@ -3,6 +3,8 @@ package com.navarro.spotifygold.dal
 import android.content.Context
 import android.os.Environment
 import android.util.Log
+import androidx.compose.ui.res.stringResource
+import com.navarro.spotifygold.R
 import com.navarro.spotifygold.StaticToast
 import com.navarro.spotifygold.components.SearchCallBack
 import com.navarro.spotifygold.entities.DtoResultEntity
@@ -77,7 +79,12 @@ fun search(
 
             // Parse the response, with the help of kotlinx.serialization
             if (response.isSuccessful) {
-                val audioList = Json.decodeFromString<List<DtoResultEntity>>(responseData!!)
+                var audioList = emptyList<DtoResultEntity>()
+                try {
+                    audioList = Json.decodeFromString(responseData!!)
+                } catch (e: Exception) {
+                    Log.e("SearchScreen", "Error parsing response: ${e.message}", e)
+                }
                 withContext(Dispatchers.Main) {
                     callback.onSuccess(audioList)
                 }
@@ -98,7 +105,6 @@ fun saveFileToStorage(context: Context, inputStream: InputStream, fileName: Stri
     val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
     val file = File(storageDir, fileName)
 
-    StaticToast.showToast("File begin saving to ${file.absolutePath}")
     Log.d("Download", "Saving to ${file.absolutePath}")
     FileOutputStream(file).use { outputStream ->
         val buffer = ByteArray(4096)
@@ -107,7 +113,7 @@ fun saveFileToStorage(context: Context, inputStream: InputStream, fileName: Stri
             outputStream.write(buffer, 0, bytesRead)
         }
     }
-    StaticToast.showToast("File saved to ${file.absolutePath}")
+    StaticToast.showToast(context.getString(R.string.download_saved_successfully))
     Log.d("Download", "File saved to ${file.absolutePath}")
     inputStream.close()
 }
