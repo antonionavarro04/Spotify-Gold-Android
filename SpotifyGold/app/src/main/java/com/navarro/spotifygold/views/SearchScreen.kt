@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,8 +35,8 @@ import com.navarro.spotifygold.StaticToast
 import com.navarro.spotifygold.components.QueryResultItem
 import com.navarro.spotifygold.components.SearchBar
 import com.navarro.spotifygold.components.SearchCallBack
-import com.navarro.spotifygold.dal.downloadSong
-import com.navarro.spotifygold.dal.search
+import com.navarro.spotifygold.services.downloadSong
+import com.navarro.spotifygold.services.search
 import com.navarro.spotifygold.entities.DtoResultEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,17 +59,21 @@ fun SearchScreen() {
         currentAudioInfo?.let { audioInfo ->
             RequestStoragePermission { isGranted ->
                 if (isGranted) {
-                    StaticToast.showToast("Permission granted")
                     coroutineScope.launch {
                         downloadSong(context, audioInfo, 1)
                     }
                 } else {
                     // Handle permission denied case
-                    StaticToast.showToast("Permission denied")
+                    StaticToast.showToast("Permission denied, activate it through app settings")
                 }
                 requestPermission = false
             }
         }
+    }
+
+    if (query.value.isEmpty() && hasSearched) {
+        audioList.clear()
+        hasSearched = false
     }
 
     Column(
@@ -126,7 +129,6 @@ fun SearchScreen() {
 
                     override fun onFailure(error: String) {
                         Log.e("SearchScreen", "Error: $error")
-                        StaticToast.showToast("Error: $error")
                     }
                 })
             }

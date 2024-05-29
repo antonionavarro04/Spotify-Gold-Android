@@ -6,7 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,6 +18,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -30,6 +31,8 @@ import com.navarro.spotifygold.ui.theme.Black20
 import com.navarro.spotifygold.ui.theme.Black60
 import com.navarro.spotifygold.ui.theme.Black80
 
+private var previousLength = 0
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
@@ -37,6 +40,13 @@ fun SearchBar(
     isFocused: MutableState<Boolean>,
     onSearch: () -> Unit
 ) {
+    val threshold = 3
+
+    if (query.value.length > previousLength + threshold || query.value.length < previousLength - threshold) {
+            onSearch()
+            previousLength = query.value.length
+    }
+
     TextField(
         value = query.value,
         onValueChange = { query.value = it },
@@ -54,14 +64,18 @@ fun SearchBar(
             },
         textStyle = TextStyle(color = Black20, fontSize = 18.sp),
         trailingIcon = {
-            IconButton(
-                onClick = onSearch
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
-                    tint = Black20
-                )
+            if (query.value.isNotEmpty()) {
+                IconButton(
+                    onClick = {
+                        query.value = ""
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = "Search",
+                        tint = Black20
+                    )
+                }
             }
         },
         colors = TextFieldDefaults.textFieldColors(

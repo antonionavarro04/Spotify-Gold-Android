@@ -1,22 +1,29 @@
-package com.navarro.spotifygold.dal
+package com.navarro.spotifygold.services
 
 import android.content.Context
 import android.os.Environment
 import android.util.Log
-import androidx.compose.ui.res.stringResource
 import com.navarro.spotifygold.R
 import com.navarro.spotifygold.StaticToast
 import com.navarro.spotifygold.components.SearchCallBack
 import com.navarro.spotifygold.entities.DtoResultEntity
+import com.navarro.spotifygold.entities.metadata.MetadataEntity
+import com.navarro.spotifygold.services.room.DatabaseProvider
 import com.navarro.spotifygold.utils.Constants
+import com.navarro.spotifygold.utils.FileUtils
 import com.navarro.spotifygold.utils.hasManageExternalStoragePermission
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.Json.Default.decodeFromString
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.File
 import java.io.FileOutputStream
@@ -39,8 +46,6 @@ suspend fun downloadSong(
         Log.e("DownloadError", "Permission denied")
     }
 
-    StaticToast.showToast("Downloading ${audioInfo.title}")
-
     withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val request = Request.Builder().url(url).build()
@@ -49,9 +54,9 @@ suspend fun downloadSong(
             val response = client.newCall(request).execute()
 
             if (response.isSuccessful) {
-                val fileName = getFileNameFromResponse(response) ?: "${Constants.vendor} ${audioInfo.id}.mp3"
+                val fileName = "${Constants.prefix}${FileUtils.sanitizeString(id)}.mp3"
                 response.body?.byteStream()?.let { inputStream ->
-                    saveFileToStorage(context, inputStream, fileName)
+                    saveFileToStorage(context, inputStream, fileName, audioInfo)
                 }
             } else {
                 Log.e("DownloadError", "Error: ${response.code}")
@@ -62,6 +67,7 @@ suspend fun downloadSong(
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 fun search(
     query: String,
     callback: SearchCallBack
@@ -81,7 +87,7 @@ fun search(
             if (response.isSuccessful) {
                 var audioList = emptyList<DtoResultEntity>()
                 try {
-                    audioList = Json.decodeFromString(responseData!!)
+                    audioList = decodeFromString(responseData!!)
                 } catch (e: Exception) {
                     Log.e("SearchScreen", "Error parsing response: ${e.message}", e)
                 }
@@ -101,9 +107,11 @@ fun search(
     }
 }
 
-fun saveFileToStorage(context: Context, inputStream: InputStream, fileName: String) {
+fun saveFileToStorage(context: Context, inputStream: InputStream, fileName: String, audioInfo: DtoResultEntity) {
     val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
     val file = File(storageDir, fileName)
+
+    val db = DatabaseProvider.getDatabase(context)
 
     Log.d("Download", "Saving to ${file.absolutePath}")
     FileOutputStream(file).use { outputStream ->
@@ -114,9 +122,35 @@ fun saveFileToStorage(context: Context, inputStream: InputStream, fileName: Stri
         }
     }
     StaticToast.showToast(context.getString(R.string.download_saved_successfully))
-    Log.d("Download", "File saved to ${file.absolutePath}")
+    Log.d("Download", "File Successfully Downloaded!!!")
     inputStream.close()
+
+    // Update the metadata
+    GlobalScope.launch(Dispatchers.IO) {
+        try {
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url("${localUrl}${audioInfo.id}/info")
+                .build()
+
+            val response = client.newCall(request).execute()
+            if (response.isSuccessful) {
+                val responseData = response.body?.string()
+                val json = Json { ignoreUnknownKeys = true }
+                val metadata = json.decodeFromString<MetadataEntity>(responseData!!)
+                metadata.thumbnail = audioInfo.thumbnail
+
+                // Store in RoomDB
+                db.metadataDao().insertMetadata(metadata)
+            } else {
+                Log.e("Download", "Error fetching metadata: ${response.code}")
+            }
+        } catch (e: IOException) {
+            Log.e("Download", "Error updating metadata: ${e.message}")
+        }
+    }
 }
+
 
 fun getFileNameFromResponse(response: Response): String? {
     val contentDisposition = response.header("Content-Disposition")

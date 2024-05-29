@@ -1,9 +1,5 @@
 package com.navarro.spotifygold.components
 
-import android.content.Context
-import android.os.Build
-import android.os.Environment
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,52 +13,37 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-import com.navarro.spotifygold.R
-import com.navarro.spotifygold.StaticToast
 import com.navarro.spotifygold.entities.DtoResultEntity
 import com.navarro.spotifygold.utils.formatLikes
-import com.navarro.spotifygold.utils.formatNumber
 import com.navarro.spotifygold.utils.formatTime
 import com.navarro.spotifygold.utils.formatViews
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
 
 @Composable
 fun IconInfo(
     text: String,
     icon: ImageVector
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
+    ) {
         // Like icon
         Icon(
             imageVector = icon,
@@ -105,9 +86,8 @@ fun QueryResultItem(
         }
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .fillMaxHeight()
-            ,
+                .fillMaxWidth(0.73f)
+                .fillMaxHeight(),
             verticalArrangement = Arrangement.Center
         ) {
             Text(
@@ -133,8 +113,13 @@ fun QueryResultItem(
             }
 
         }
-        Column (
-            verticalArrangement = Arrangement.SpaceBetween
+        Column(
+            // Center the icons
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.End,
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
         ) {
             IconInfo(
                 text = formatViews(audioInfo.views),

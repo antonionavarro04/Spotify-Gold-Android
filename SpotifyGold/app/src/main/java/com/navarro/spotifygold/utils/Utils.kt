@@ -43,7 +43,8 @@ fun formatNumber(number: Long): String {
     return when {
         number < 1000 -> number.toString()
         number < 1000000 -> "${number / 1000}k"
-        else -> "${number / 1000000}m"
+        number < 1000000000 -> "${number / 1000000}m"
+        else -> "${number / 1000000000}B"
     }
 }
 
