@@ -6,8 +6,10 @@ import android.util.Log
 import com.navarro.spotifygold.R
 import com.navarro.spotifygold.StaticToast
 import com.navarro.spotifygold.components.SearchCallBack
+import com.navarro.spotifygold.entities.AudioDRO
 import com.navarro.spotifygold.entities.DtoResultEntity
 import com.navarro.spotifygold.entities.metadata.MetadataEntity
+import com.navarro.spotifygold.services.room.AppDatabase
 import com.navarro.spotifygold.services.room.DatabaseProvider
 import com.navarro.spotifygold.utils.Constants
 import com.navarro.spotifygold.utils.FileUtils
@@ -17,13 +19,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.Json.Default.decodeFromString
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.File
 import java.io.FileOutputStream
@@ -32,6 +31,39 @@ import java.io.InputStream
 import java.util.regex.Pattern
 
 private const val localUrl = "${Constants.url}yt/"
+
+fun readMusicFolder(
+    context: Context
+): MutableList<AudioDRO> {
+    val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+    val files = storageDir.listFiles()
+    val listAudioDRO = mutableListOf<AudioDRO>()
+
+    val db = DatabaseProvider.getDatabase(context)
+
+    // Get just the .mp3 files
+    files?.filter {
+        it.name.endsWith(".mp3")
+    }?.forEach {
+
+        val isSPGAudio = it.name.startsWith(Constants.prefix)
+        var metadata: MetadataEntity? = null
+
+        if (isSPGAudio) {
+            val id = it.name.substringAfter(Constants.prefix).substringBefore(".mp3")
+            metadata = db.metadataDao().getMetadata(id)
+        }
+
+        listAudioDRO.add(
+            AudioDRO(
+                metadata,
+                it.absolutePath
+            )
+        )
+    }
+
+    return listAudioDRO
+}
 
 suspend fun downloadSong(
     context: Context,
@@ -107,7 +139,12 @@ fun search(
     }
 }
 
-fun saveFileToStorage(context: Context, inputStream: InputStream, fileName: String, audioInfo: DtoResultEntity) {
+fun saveFileToStorage(
+    context: Context,
+    inputStream: InputStream,
+    fileName: String,
+    audioInfo: DtoResultEntity
+) {
     val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
     val file = File(storageDir, fileName)
 

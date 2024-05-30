@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.navarro.spotifygold.models.ItemsBottomNav
 import com.navarro.spotifygold.ui.theme.Black0
+import com.navarro.spotifygold.ui.theme.*
 import com.navarro.spotifygold.ui.theme.Black70
 import com.navarro.spotifygold.ui.theme.BlackFaded
 import com.navarro.spotifygold.utils.currentRoute
@@ -33,14 +34,14 @@ fun BottomNavigationBar(
         ItemsBottomNav.Home(context), ItemsBottomNav.Search(context), ItemsBottomNav.Library(context)
     )
     BottomAppBar(
-        containerColor = BlackFaded,
+        containerColor = Color.Transparent,
         contentPadding = PaddingValues(0.dp),
         modifier = Modifier
             .padding(0.dp)
             .height(80.dp)
     ) {
         NavigationBar(
-            containerColor = Color.Transparent,
+            containerColor = Black10Transparent,
             contentColor = Color.White,
             modifier = Modifier.padding(0.dp)
             // Make icons bigger

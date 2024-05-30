@@ -3,6 +3,7 @@ package com.navarro.spotifygold.views
 import RequestStoragePermission
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -135,7 +136,8 @@ fun SearchScreen() {
         }
         Spacer(modifier = Modifier.height(20.dp))
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(20.dp), modifier = Modifier.fillMaxSize()
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            modifier = Modifier.fillMaxSize()
         ) {
             items(count = audioList.size, key = { index -> audioList[index].id }) { index ->
                 QueryResultItem(audioInfo = audioList[index], onDownloadClick = { audioInfo ->
@@ -144,5 +146,9 @@ fun SearchScreen() {
                 })
             }
         }
+        Box(
+            modifier = Modifier.height(200.dp)
+                .fillMaxWidth()
+        )
     }
 }

@@ -18,4 +18,23 @@
     <string name="global_delete">Delete</string>
     <string name="global_no_results">No Results</string>
     <string name="global_no_internet">No Internet Connection</string>
+
+    <string name="error_not_implemented_yet">Not Implemented Yet!!!</string>
+    <string name="error_no_internet">No Internet Connection</string>
+    <string name="error_no_results">No Results Found</string>
+    <string name="error_no_songs">No Songs Found</string>
+    <string name="error_no_albums">No Albums Found</string>
+    <string name="error_no_artists">No Artists Found</string>
+    <string name="error_no_playlists">No Playlists Found</string>
+    <string name="error_no_downloads">No Downloads Found</string>
+    <string name="error_no_search_results">No Search Results Found</string>
+    <string name="error_no_saved_songs">No Saved Songs Found</string>
+    <string name="error_no_saved_albums">No Saved Albums Found</string>
+    <string name="error_no_saved_artists">No Saved Artists Found</string>
+    <string name="error_file_not_found">File Not Found</string>
+    <string name="error_file_not_saved">File Not Saved</string>
+    <string name="error_file_not_deleted">File Not Deleted</string>
+    <string name="error_file_not_downloaded">File Not Downloaded</string>
+    <string name="error_file_not_played">File Not Played</string>
+    <string name="error_unknown">Unknown Error</string>
 </resources>
