@@ -74,6 +74,13 @@ fun MainScreen() {
     val context = LocalContext.current
     val navController = rememberNavController()
     val queue = remember { mutableStateListOf<AudioDRO>() }
+    val current = remember { mutableStateOf<AudioDRO>(
+        AudioDRO(
+            metadata = null,
+            route = "???",
+            pos = 0
+        )
+    ) }
     val mediaPlayer = MediaPlayer.create(context, R.raw.the_dark_of_the_matinee)
 
     Scaffold(
@@ -87,9 +94,12 @@ fun MainScreen() {
             ) {
                 MusicControlBar(
                     queue = queue,
-                    mediaPlayer = mediaPlayer
+                    mediaPlayer = mediaPlayer,
+                    current = current
                 )
-                BottomNavigationBar(navController = navController)
+                BottomNavigationBar(
+                    navController = navController
+                )
             }
         }
     ) { padding ->
@@ -107,7 +117,8 @@ fun MainScreen() {
             SpotifyNavigation(
                 navController = navController,
                 queue = queue,
-                mediaPlayer = mediaPlayer
+                mediaPlayer = mediaPlayer,
+                current = current
             )
         }
     }

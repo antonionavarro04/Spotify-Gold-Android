@@ -60,7 +60,8 @@ val popExitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> E
 fun SpotifyNavigation(
     navController: NavHostController,
     queue: MutableList<AudioDRO>,
-    mediaPlayer: MediaPlayer
+    mediaPlayer: MediaPlayer,
+    current: MutableState<AudioDRO>
 ) {
     NavHost(
         modifier = Modifier.fillMaxSize(),
@@ -82,7 +83,8 @@ fun SpotifyNavigation(
         composable(Navigation.LIBRARY.name) {
             LibraryScreen(
                 mediaPlayer = mediaPlayer,
-                queue = queue
+                queue = queue,
+                current = current
             )
         }
     }

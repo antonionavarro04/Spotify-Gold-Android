@@ -7,7 +7,8 @@ import java.util.Date
 
 class AudioDRO(
     var metadata: MetadataEntity?,
-    var route: String
+    var route: String,
+    var pos: Int
 ) {
     var uploadDate: Date = Date()
 

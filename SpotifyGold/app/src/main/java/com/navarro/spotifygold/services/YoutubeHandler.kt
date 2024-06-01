@@ -34,12 +34,15 @@ private const val localUrl = "${Constants.url}yt/"
 
 fun readMusicFolder(
     context: Context
-): MutableList<AudioDRO> {
+): List<AudioDRO> {
+    Log.d("ReadMusicFolder", "Reading music folder")
     val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
     val files = storageDir.listFiles()
     val listAudioDRO = mutableListOf<AudioDRO>()
 
     val db = DatabaseProvider.getDatabase(context)
+
+    var pos = 0
 
     // Get just the .mp3 files
     files?.filter {
@@ -57,11 +60,15 @@ fun readMusicFolder(
         listAudioDRO.add(
             AudioDRO(
                 metadata,
-                it.absolutePath
+                it.absolutePath,
+                pos
             )
         )
+
+        pos++
     }
 
+    Log.d("ReadMusicFolder", "Found ${listAudioDRO.size} audio files")
     return listAudioDRO
 }
 
@@ -162,12 +169,22 @@ fun saveFileToStorage(
     Log.d("Download", "File Successfully Downloaded!!!")
     inputStream.close()
 
+    getInfo(context, audioInfo.id)
+}
+
+@OptIn(DelicateCoroutinesApi::class)
+fun getInfo(
+    context: Context,
+    id: String
+) {
+    val db: AppDatabase = DatabaseProvider.getDatabase(context)
+
     // Update the metadata
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val client = OkHttpClient()
             val request = Request.Builder()
-                .url("${localUrl}${audioInfo.id}/info")
+                .url("${localUrl}$id/info")
                 .build()
 
             val response = client.newCall(request).execute()
@@ -175,7 +192,6 @@ fun saveFileToStorage(
                 val responseData = response.body?.string()
                 val json = Json { ignoreUnknownKeys = true }
                 val metadata = json.decodeFromString<MetadataEntity>(responseData!!)
-                metadata.thumbnail = audioInfo.thumbnail
 
                 // Store in RoomDB
                 db.metadataDao().insertMetadata(metadata)

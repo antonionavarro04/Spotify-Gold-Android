@@ -61,7 +61,7 @@ fun SearchScreen() {
             RequestStoragePermission { isGranted ->
                 if (isGranted) {
                     coroutineScope.launch {
-                        downloadSong(context, audioInfo, 1)
+                        downloadSong(context, audioInfo, 0)
                     }
                 } else {
                     // Handle permission denied case
