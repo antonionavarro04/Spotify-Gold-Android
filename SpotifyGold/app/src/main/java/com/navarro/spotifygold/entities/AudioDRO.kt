@@ -4,6 +4,7 @@ import com.navarro.spotifygold.entities.metadata.MetadataEntity
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class AudioDRO(
     var metadata: MetadataEntity?,
@@ -20,10 +21,10 @@ class AudioDRO(
         if (this.metadata != null) {
             val strDate = this.metadata!!.uploadAt
 
-            val sdf = SimpleDateFormat("M/d/yyyy h:mm:ss a Z")
+            val sdf = SimpleDateFormat("M/d/yyyy h:mm:ss a Z", Locale.US)
             try {
                 // Parse the input date string
-                this.uploadDate = sdf.parse(strDate)
+                this.uploadDate = sdf.parse(strDate) ?: Date()
             } catch (e: ParseException) {
                 // Handle parse exception
                 e.printStackTrace()

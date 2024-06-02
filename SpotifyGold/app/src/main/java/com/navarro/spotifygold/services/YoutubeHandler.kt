@@ -6,8 +6,10 @@ import android.util.Log
 import com.navarro.spotifygold.R
 import com.navarro.spotifygold.StaticToast
 import com.navarro.spotifygold.components.SearchCallBack
+import com.navarro.spotifygold.entities.ArtistDRO
 import com.navarro.spotifygold.entities.AudioDRO
 import com.navarro.spotifygold.entities.DtoResultEntity
+import com.navarro.spotifygold.entities.metadata.AuthorEntity
 import com.navarro.spotifygold.entities.metadata.MetadataEntity
 import com.navarro.spotifygold.services.room.AppDatabase
 import com.navarro.spotifygold.services.room.DatabaseProvider
@@ -71,6 +73,43 @@ fun readMusicFolder(
     Log.d("ReadMusicFolder", "Found ${listAudioDRO.size} audio files")
     return listAudioDRO
 }
+
+fun readArtists(context: Context): List<ArtistDRO> {
+    val db = DatabaseProvider.getDatabase(context)
+    val authors = db.metadataDao().getAuthors()
+    val listArtistDRO = mutableListOf<ArtistDRO>()
+
+    // Get the directory for music files
+    val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+    val files = storageDir?.listFiles()?.filter { it.name.endsWith(".mp3") } ?: emptyList()
+
+    // Process each author
+    authors.forEach { authorEntity ->
+        val authorId = authorEntity.id
+        val listIds = db.metadataDao().getIdsByAuthorId(authorId).toMutableList()
+        var count = 0
+
+        // Process each id in listIds
+        listIds.toList().forEach { idToCheck ->
+            // Filter files to those matching the prefix and id
+            files.filter { file ->
+                val isSPGAudio = file.name.startsWith(Constants.prefix)
+                val id = file.name.substringAfter(Constants.prefix).substringBefore(".mp3")
+                isSPGAudio && id == idToCheck
+            }.forEach { _ ->
+                // Increment count and remove the matched id from listIds
+                count++
+                listIds.remove(idToCheck)
+            }
+        }
+
+        // Add the processed author and count to the listArtistDRO
+        listArtistDRO.add(ArtistDRO(authorEntity, count))
+    }
+
+    return listArtistDRO
+}
+
 
 suspend fun downloadSong(
     context: Context,
@@ -154,8 +193,6 @@ fun saveFileToStorage(
 ) {
     val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
     val file = File(storageDir, fileName)
-
-    val db = DatabaseProvider.getDatabase(context)
 
     Log.d("Download", "Saving to ${file.absolutePath}")
     FileOutputStream(file).use { outputStream ->

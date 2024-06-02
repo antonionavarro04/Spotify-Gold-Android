@@ -44,7 +44,23 @@ fun MusicControlBar(
         val listener = MediaPlayer.OnCompletionListener {
             isPlaying = mediaPlayer.isPlaying
         }
-        mediaPlayer.setOnCompletionListener(listener)
+        mediaPlayer.setOnCompletionListener {
+            isPlaying = mediaPlayer.isPlaying
+
+            try {
+                val currentIndex = queue.indexOf(current.value)
+                current.value = queue[currentIndex + 1]
+            } catch (e: IndexOutOfBoundsException) {
+                current.value = queue[0]
+            }
+
+            current.value.let { currentAudio ->
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(currentAudio.route)
+                mediaPlayer.prepare()
+                mediaPlayer.start()
+            }
+        }
         mediaPlayer.setOnPreparedListener {
             isPlaying = mediaPlayer.isPlaying
         }

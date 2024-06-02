@@ -1,0 +1,4 @@
+<!ELEMENT resources (string+)>
+<!ELEMENT string (#PCDATA)>
+<!ATTLIST string name ID #REQUIRED>
+<!ATTLIST string translatable NMTOKEN #IMPLIED>

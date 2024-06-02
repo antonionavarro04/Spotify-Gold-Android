@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LibraryMusic
-import androidx.compose.material.icons.filled.SavedSearch
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.LibraryMusic
 import androidx.compose.material.icons.outlined.Search
@@ -26,7 +26,7 @@ sealed class ItemsBottomNav (
     )
 
     class Search(context: Context) : ItemsBottomNav(
-        Icons.Filled.SavedSearch,
+        Icons.Filled.Search,
         Icons.Outlined.Search,
         context.getString(R.string.navigation_search),
         Navigation.SEARCH.name
