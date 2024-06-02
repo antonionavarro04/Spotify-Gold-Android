@@ -1,3 +1,4 @@
+<resources>
 <string name="navigation_home">بيت</string>
 <string name="navigation_library">مكتبة</string>
 <string name="navigation_search">يبحث</string>
@@ -34,3 +35,4 @@
 <string name="error_file_not_downloaded">لم يتم تنزيل الملف بشكل صحيح</string>
 <string name="error_file_not_played">لم يتم تشغيل الملف</string>
 <string name="error_unknown">خطأ غير معروف</string>
+</resources>

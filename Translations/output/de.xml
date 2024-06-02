@@ -1,3 +1,4 @@
+<resources>
 <string name="navigation_home">Heim</string>
 <string name="navigation_library">Bibliothek</string>
 <string name="navigation_search">Suchen</string>
@@ -34,3 +35,4 @@
 <string name="error_file_not_downloaded">Datei wurde nicht korrekt heruntergeladen</string>
 <string name="error_file_not_played">Datei nicht abgespielt</string>
 <string name="error_unknown">Unbekannter Fehler</string>
+</resources>

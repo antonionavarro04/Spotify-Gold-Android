@@ -1,3 +1,4 @@
+<resources>
 <string name="navigation_home">Lar</string>
 <string name="navigation_library">Biblioteca</string>
 <string name="navigation_search">Procurar</string>
@@ -34,3 +35,4 @@
 <string name="error_file_not_downloaded">Arquivo não baixado corretamente</string>
 <string name="error_file_not_played">Arquivo não reproduzido</string>
 <string name="error_unknown">Erro desconhecido</string>
+</resources>

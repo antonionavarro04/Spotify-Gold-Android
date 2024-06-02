@@ -3,12 +3,14 @@ from googletrans import Translator
 
 translator = Translator()
 
-langs = ['zh-CN', 'es', 'fr', 'de', 'it', 'pt', 'ja', 'ru', "ar"]
+# Languages located in ./input/languages.csv
+with open("input/languages.csv", "r") as file:
+    langs = file.read().split(",")
 
 for lang in langs:
     # Create a file in output/ for each language
     with open(f"output/{lang}.xml", "w") as file:
-        file.write("")
+        file.write("<resources>\n")
 
 # XML string
 with open("input/input.xml", "r") as file:
@@ -29,6 +31,12 @@ for lang in langs:
             except:
                 pass
 
-            tranlation = translator.translate(text=e.text, dest=lang, src="en").text
+            try:
+                tranlation = translator.translate(text=e.text, dest=lang, src="en").text
+            except:
+                print(f"Unknown Language: {lang}")
+                tranlation = e.text
             out = f"<string name=\"{e.attrib['name']}\">{tranlation}</string>"
             file.write(out + "\n")
+
+        file.write("</resources>")

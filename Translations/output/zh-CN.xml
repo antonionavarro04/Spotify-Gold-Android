@@ -1,3 +1,4 @@
+<resources>
 <string name="navigation_home">家</string>
 <string name="navigation_library">图书馆</string>
 <string name="navigation_search">搜索</string>
@@ -34,3 +35,4 @@
 <string name="error_file_not_downloaded">文件未正确下载</string>
 <string name="error_file_not_played">文件未播放</string>
 <string name="error_unknown">未知错误</string>
+</resources>

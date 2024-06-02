@@ -1,3 +1,4 @@
+<resources>
 <string name="navigation_home">Дом</string>
 <string name="navigation_library">Библиотека</string>
 <string name="navigation_search">Поиск</string>
@@ -34,3 +35,4 @@
 <string name="error_file_not_downloaded">Файл загружен неправильно</string>
 <string name="error_file_not_played">Файл не воспроизводится</string>
 <string name="error_unknown">Неизвестная ошибка</string>
+</resources>

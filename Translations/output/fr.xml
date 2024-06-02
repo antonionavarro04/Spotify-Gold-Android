@@ -1,3 +1,4 @@
+<resources>
 <string name="navigation_home">Maison</string>
 <string name="navigation_library">Bibliothèque</string>
 <string name="navigation_search">Recherche</string>
@@ -34,3 +35,4 @@
 <string name="error_file_not_downloaded">Fichier non téléchargé correctement</string>
 <string name="error_file_not_played">Fichier non lu</string>
 <string name="error_unknown">Erreur inconnue</string>
+</resources>

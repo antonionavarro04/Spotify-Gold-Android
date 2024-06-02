@@ -1,3 +1,4 @@
+<resources>
 <string name="navigation_home">家</string>
 <string name="navigation_library">図書館</string>
 <string name="navigation_search">検索</string>
@@ -34,3 +35,4 @@
 <string name="error_file_not_downloaded">ファイルが正しくダウンロードされない</string>
 <string name="error_file_not_played">ファイルが再生されない</string>
 <string name="error_unknown">不明なエラー</string>
+</resources>
