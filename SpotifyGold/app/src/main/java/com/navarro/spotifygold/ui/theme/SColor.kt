@@ -50,3 +50,5 @@ val Gold20Transparent = Color(0xccd6c356)
 val Gold10Transparent = Color(0xe6d6c356)
 
 val BlackGradient = Brush.verticalGradient(colors = listOf(Black30Transparent, Black100))
+
+val Transparent = Color(0x00000000)
