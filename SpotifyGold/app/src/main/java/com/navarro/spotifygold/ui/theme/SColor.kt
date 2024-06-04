@@ -29,7 +29,6 @@ val Black10 = Color(0xFFe6e6e6)
 val Black0 = Color(0xFFffffff) // Practically Secondary
 
 // Black w/ Transparency
-val Black100Transparent = Color(0x00000000)
 val Black90Transparent = Color(0x1a000000)
 val Black80Transparent = Color(0x33000000)
 val Black70Transparent = Color(0x4d000000)
@@ -39,6 +38,15 @@ val Black40Transparent = Color(0x99000000)
 val Black30Transparent = Color(0xb3000000)
 val Black20Transparent = Color(0xcc000000)
 val Black10Transparent = Color(0xe6000000)
-val Black0Transparent = Color(0xff000000)
 
-val BlackGradient = Brush.verticalGradient(colors = listOf(Black30Transparent, Black0Transparent))
+val Gold90Transparent = Color(0x1ad6c356)
+val Gold80Transparent = Color(0x33d6c356)
+val Gold70Transparent = Color(0x4dd6c356)
+val Gold60Transparent = Color(0x66d6c356)
+val Gold50Transparent = Color(0x80d6c356)
+val Gold40Transparent = Color(0x99d6c356)
+val Gold30Transparent = Color(0xb3d6c356)
+val Gold20Transparent = Color(0xccd6c356)
+val Gold10Transparent = Color(0xe6d6c356)
+
+val BlackGradient = Brush.verticalGradient(colors = listOf(Black30Transparent, Black100))

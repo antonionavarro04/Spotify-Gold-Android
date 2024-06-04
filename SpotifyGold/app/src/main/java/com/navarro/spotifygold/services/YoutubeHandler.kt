@@ -5,7 +5,7 @@ import android.os.Environment
 import android.util.Log
 import com.navarro.spotifygold.R
 import com.navarro.spotifygold.StaticToast
-import com.navarro.spotifygold.components.SearchCallBack
+import com.navarro.spotifygold.models.SearchCallBack
 import com.navarro.spotifygold.entities.ArtistDRO
 import com.navarro.spotifygold.entities.AudioDRO
 import com.navarro.spotifygold.entities.DtoResultEntity
@@ -35,7 +35,8 @@ import java.util.regex.Pattern
 private const val localUrl = "${Constants.url}yt/"
 
 fun readMusicFolder(
-    context: Context
+    context: Context,
+    artist: AuthorEntity? = null
 ): List<AudioDRO> {
     Log.d("ReadMusicFolder", "Reading music folder")
     val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
@@ -50,7 +51,6 @@ fun readMusicFolder(
     files?.filter {
         it.name.endsWith(".mp3")
     }?.forEach {
-
         val isSPGAudio = it.name.startsWith(Constants.prefix)
         var metadata: MetadataEntity? = null
 
@@ -59,13 +59,15 @@ fun readMusicFolder(
             metadata = db.metadataDao().getMetadata(id)
         }
 
-        listAudioDRO.add(
-            AudioDRO(
-                metadata,
-                it.absolutePath,
-                pos
-            )
-        )
+        val newAudioDRO = AudioDRO(metadata, it.absolutePath, pos)
+
+        if (artist == null) {
+            listAudioDRO.add(newAudioDRO)
+        } else {
+            if (metadata!!.author.id == artist.id) {
+                listAudioDRO.add(newAudioDRO)
+            }
+        }
 
         pos++
     }
@@ -96,7 +98,7 @@ fun readArtists(context: Context): List<ArtistDRO> {
                 val isSPGAudio = file.name.startsWith(Constants.prefix)
                 val id = file.name.substringAfter(Constants.prefix).substringBefore(".mp3")
                 isSPGAudio && id == idToCheck
-            }.forEach { _ ->
+            }.forEach { file ->
                 // Increment count and remove the matched id from listIds
                 count++
                 listIds.remove(idToCheck)
@@ -104,7 +106,8 @@ fun readArtists(context: Context): List<ArtistDRO> {
         }
 
         // Add the processed author and count to the listArtistDRO
-        listArtistDRO.add(ArtistDRO(authorEntity, count))
+        if (count > 0)
+            listArtistDRO.add(ArtistDRO(authorEntity, count))
     }
 
     return listArtistDRO
@@ -239,18 +242,4 @@ fun getInfo(
             Log.e("Download", "Error updating metadata: ${e.message}")
         }
     }
-}
-
-
-fun getFileNameFromResponse(response: Response): String? {
-    val contentDisposition = response.header("Content-Disposition")
-    contentDisposition?.let {
-        val regex = "filename=\"(.+?)\""
-        val pattern = Pattern.compile(regex)
-        val matcher = pattern.matcher(it)
-        if (matcher.find()) {
-            return matcher.group(1)
-        }
-    }
-    return null
 }

@@ -33,9 +33,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.navarro.spotifygold.R
 import com.navarro.spotifygold.StaticToast
-import com.navarro.spotifygold.components.QueryResultItem
-import com.navarro.spotifygold.components.SearchBar
-import com.navarro.spotifygold.components.SearchCallBack
+import com.navarro.spotifygold.components.search.QueryResultItem
+import com.navarro.spotifygold.components.search.SearchBar
+import com.navarro.spotifygold.models.SearchCallBack
 import com.navarro.spotifygold.services.downloadSong
 import com.navarro.spotifygold.services.search
 import com.navarro.spotifygold.entities.DtoResultEntity

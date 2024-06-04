@@ -40,4 +40,6 @@
     <string name="error_file_not_downloaded">File Not Downloaded Correctly</string>
     <string name="error_file_not_played">File Not Played</string>
     <string name="error_unknown">Unknown Error</string>
+
+    <string name="library_downloaded_songs">Downloaded Songs</string>
 </resources>
