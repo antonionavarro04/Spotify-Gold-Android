@@ -31,6 +31,7 @@ import com.navarro.spotifygold.services.StaticToast
 import com.navarro.spotifygold.components.global.InteractableIconButton
 import com.navarro.spotifygold.entities.AudioDRO
 import com.navarro.spotifygold.services.MediaPlayerSingleton.mediaPlayer
+import com.navarro.spotifygold.services.MediaPlayerSingleton.play
 import com.navarro.spotifygold.services.getInfo
 import com.navarro.spotifygold.services.notification.createNotificationV1
 import com.navarro.spotifygold.ui.theme.Black0
@@ -61,10 +62,7 @@ fun SongsLazyColumn(
                     .height(50.dp)
                     .clickable {
                         try {
-                            mediaPlayer.reset()
-                            mediaPlayer.setDataSource(audioDRO.route)
-                            mediaPlayer.prepare()
-                            mediaPlayer.start()
+                            play(audioDRO.route)
                             createNotificationV1(context, mediaPlayer, audioDRO)
                         } catch (e: FileNotFoundException) {
                             StaticToast.showToast(

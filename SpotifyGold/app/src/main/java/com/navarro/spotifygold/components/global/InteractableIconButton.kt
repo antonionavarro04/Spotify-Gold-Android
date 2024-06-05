@@ -2,6 +2,7 @@ package com.navarro.spotifygold.components.global
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ fun InteractableIconButton(
     icon: ImageVector,
     tint: Color = Black0,
     contentDescription: String = "Icon-$icon",
+    size: Dp = 28.dp,
     onClick: () -> Unit
 ) {
     IconButton(
@@ -27,7 +29,7 @@ fun InteractableIconButton(
         Icon(
             modifier = Modifier
                 .padding(0.dp)
-                .fillMaxSize(0.7f),
+                .size(size),
             imageVector = icon,
             contentDescription = contentDescription,
             tint = tint

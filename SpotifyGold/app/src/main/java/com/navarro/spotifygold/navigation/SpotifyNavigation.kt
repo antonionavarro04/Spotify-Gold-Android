@@ -1,16 +1,10 @@
 package com.navarro.spotifygold.navigation
 
-import android.media.MediaPlayer
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.EaseIn
-import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.navarro.spotifygold.entities.AudioDRO
+import com.navarro.spotifygold.views.CurrentScreen
 import com.navarro.spotifygold.views.HomeScreen
 import com.navarro.spotifygold.views.LibraryScreen
 import com.navarro.spotifygold.views.SearchScreen
@@ -60,7 +55,6 @@ val popExitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> E
 fun SpotifyNavigation(
     navController: NavHostController,
     queue: MutableList<AudioDRO>,
-    mediaPlayer: MediaPlayer,
     current: MutableState<AudioDRO>
 ) {
     NavHost(
@@ -72,9 +66,7 @@ fun SpotifyNavigation(
         popEnterTransition = popEnterTransition,
         popExitTransition = popExitTransition
     ) {
-        composable(
-            Navigation.HOME.name
-        ) {
+        composable(Navigation.HOME.name) {
             HomeScreen()
         }
         composable(Navigation.SEARCH.name) {
@@ -82,6 +74,13 @@ fun SpotifyNavigation(
         }
         composable(Navigation.LIBRARY.name) {
             LibraryScreen(
+                queue = queue,
+                current = current
+            )
+        }
+        composable(Navigation.CURRENT.name) {
+            CurrentScreen(
+                navController = navController,
                 queue = queue,
                 current = current
             )

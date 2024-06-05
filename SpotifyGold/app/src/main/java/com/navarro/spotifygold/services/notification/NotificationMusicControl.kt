@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
+import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 import androidx.media.app.NotificationCompat.MediaStyle
 import com.navarro.spotifygold.MainActivity
@@ -26,6 +27,7 @@ fun createNotificationV1(context: Context, mediaPlayer: MediaPlayer, currentSong
         context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     notificationManagerInstance.createNotificationChannel(channel)
 
+    val mediaSession = MediaSessionCompat(context, "com.navarro.spotifygold")
 
     // Create an intent for the action when the notification is clicked
     val notificationIntent = Intent(context, MainActivity::class.java)
@@ -35,7 +37,7 @@ fun createNotificationV1(context: Context, mediaPlayer: MediaPlayer, currentSong
     val nextIntent = Intent(context, NextActivity::class.java)
 
     val pendingIntent =
-        PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
 
     // Build the notification
     val notificationBuilder = NotificationCompat.Builder(context, channelId)
@@ -44,7 +46,11 @@ fun createNotificationV1(context: Context, mediaPlayer: MediaPlayer, currentSong
         .setContentText(currentSong.getSafeArtist())
         .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_spotify_gold))
         .setContentIntent(pendingIntent)
-        .setStyle( MediaStyle().setShowActionsInCompactView() )
+        .setStyle( MediaStyle()
+            /*.setMediaSession(
+                mediaSession.sessionToken
+            )*/
+        )
         .setShowWhen(false)
         .setPriority(NotificationCompat.PRIORITY_MAX)
         .setOngoing(true)
@@ -56,7 +62,7 @@ fun createNotificationV1(context: Context, mediaPlayer: MediaPlayer, currentSong
                 context,
                 0,
                 previousIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_IMMUTABLE
             )
         )
         .addAction(
@@ -66,7 +72,7 @@ fun createNotificationV1(context: Context, mediaPlayer: MediaPlayer, currentSong
                 context,
                 0,
                 pauseIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_IMMUTABLE
             )
         )
         .addAction(
@@ -76,7 +82,7 @@ fun createNotificationV1(context: Context, mediaPlayer: MediaPlayer, currentSong
                 context,
                 0,
                 nextIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT
+                PendingIntent.FLAG_IMMUTABLE
             )
         )
 

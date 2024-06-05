@@ -4,5 +4,6 @@ enum class Navigation {
     HOME,
     SEARCH,
     LIBRARY,
+    CURRENT,
     SETTINGS
 }

@@ -117,7 +117,10 @@ fun SearchScreen() {
                 query = query,
                 isFocused = isTextBoxFocused,
             ) {
-                search(query.value, object : SearchCallBack {
+                search(
+                    context,
+                    query.value,
+                    object : SearchCallBack {
                     override fun onSuccess(newAudioList: List<DtoResultEntity>) {
                         audioList.clear()
 

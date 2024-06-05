@@ -24,10 +24,12 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.Json.Default.decodeFromString
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.net.UnknownServiceException
 
 private const val localUrl = "${Constants.url}yt/"
 
@@ -147,6 +149,7 @@ suspend fun downloadSong(
 
 @OptIn(DelicateCoroutinesApi::class)
 fun search(
+    context: Context,
     query: String,
     callback: SearchCallBack
 ) {
@@ -158,7 +161,14 @@ fun search(
                 .url("${localUrl}search?query=$query&maxResults=5")
                 .build()
 
-            val response = client.newCall(request).execute()
+            val response: Response
+            try {
+                response = client.newCall(request).execute()
+            } catch (e: UnknownServiceException) {
+                StaticToast.showToast(context.getString(R.string.error_server_unavailable))
+                e.printStackTrace()
+                return@launch
+            }
             val responseData = response.body?.string()
 
             // Parse the response, with the help of kotlinx.serialization

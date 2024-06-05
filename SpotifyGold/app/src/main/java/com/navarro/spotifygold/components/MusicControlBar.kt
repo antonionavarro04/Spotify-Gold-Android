@@ -3,7 +3,9 @@ package com.navarro.spotifygold.components
 import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,9 +39,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.navarro.spotifygold.entities.AudioDRO
+import com.navarro.spotifygold.navigation.Navigation
 import com.navarro.spotifygold.services.MediaPlayerSingleton.mediaPlayer
+import com.navarro.spotifygold.services.MediaPlayerSingleton.next
+import com.navarro.spotifygold.services.MediaPlayerSingleton.playPause
+import com.navarro.spotifygold.services.MediaPlayerSingleton.previous
 import com.navarro.spotifygold.services.notification.createNotificationV1
 import com.navarro.spotifygold.ui.theme.Black30Transparent
 import com.navarro.spotifygold.ui.theme.Black80
@@ -51,6 +58,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MusicControlBar(
+    navController: NavController,
     queue: MutableList<AudioDRO>,
     current: MutableState<AudioDRO>
 ) {
@@ -58,7 +66,7 @@ fun MusicControlBar(
 
     val updateScope = rememberCoroutineScope() // Create a coroutine scope for the update
 
-    var isPlaying by remember { mutableStateOf(mediaPlayer!!.isPlaying) }
+    var isPlaying by remember { mutableStateOf(mediaPlayer.isPlaying) }
 
     val playedTime = remember { mutableStateOf(0) }
 
@@ -66,19 +74,8 @@ fun MusicControlBar(
         mediaPlayer.setOnCompletionListener {
             isPlaying = mediaPlayer.isPlaying
 
-            try {
-                val currentIndex = queue.indexOf(current.value)
-                current.value = queue[currentIndex + 1]
-            } catch (e: IndexOutOfBoundsException) {
-                current.value = queue[0]
-            }
-
-            current.value.let { currentAudio ->
-                mediaPlayer.reset()
-                mediaPlayer.setDataSource(currentAudio.route)
-                mediaPlayer.prepare()
-                mediaPlayer.start()
-            }
+            next(queue, current)
+            createNotificationV1(context, mediaPlayer, current.value)
         }
         mediaPlayer.setOnPreparedListener {
             isPlaying = mediaPlayer.isPlaying
@@ -135,31 +132,24 @@ fun MusicControlBar(
                             },
                             onDragEnd = {
                                 if (totalDragAmount < -100) { // Swipe left
-                                    try {
-                                        val currentIndex = queue.indexOf(current.value)
-                                        current.value = queue[currentIndex + 1]
-                                    } catch (e: IndexOutOfBoundsException) {
-                                        current.value = queue[0]
-                                    }
+                                    next(queue, current)
+                                    createNotificationV1(context, mediaPlayer, current.value)
                                 } else if (totalDragAmount > 100) { // Swipe right
-                                    try {
-                                        val currentIndex = queue.indexOf(current.value)
-                                        current.value = queue[currentIndex - 1]
-                                    } catch (e: IndexOutOfBoundsException) {
-                                        current.value = queue[queue.size - 1]
-                                    }
+                                    previous(queue, current)
+                                    createNotificationV1(context, mediaPlayer, current.value)
                                 }
 
-                                current.value.let { currentAudio ->
-                                    mediaPlayer.reset()
-                                    mediaPlayer.setDataSource(currentAudio.route)
-                                    mediaPlayer.prepare()
-                                    mediaPlayer.start()
-                                }
                                 totalDragAmount = 0f
                             }
                         )
                     }
+                    .clickable(
+                        onClick = {
+                            navController.navigate(Navigation.CURRENT.name)
+                        },
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    )
             ) {
                 Row(
                     // Real Bar
@@ -205,14 +195,9 @@ fun MusicControlBar(
                         )
                     }
                     IconButton(onClick = {
-                        if (mediaPlayer.isPlaying) {
-                            mediaPlayer.pause()
-                            createNotificationV1(context, mediaPlayer, currentSong)
-                        } else {
-                            mediaPlayer.start()
-                            createNotificationV1(context, mediaPlayer, currentSong)
-                        }
-                        // Update the state to reflect the current playback status
+                        playPause()
+                        createNotificationV1(context, mediaPlayer, currentSong)
+
                         isPlaying = mediaPlayer.isPlaying
                     }) {
                         Icon(

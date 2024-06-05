@@ -42,4 +42,7 @@
     <string name="error_unknown">Unknown Error</string>
 
     <string name="library_downloaded_songs">Downloaded Songs</string>
+
+    <string name="playing_from">Playing From</string>
+    <string name="error_server_unavailable">Server is either Shutdown or Unavailable</string>
 </resources>

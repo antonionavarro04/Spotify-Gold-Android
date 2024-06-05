@@ -100,7 +100,7 @@ fun LibraryScreen(
                             .clip(CircleShape)
                     )
                     Text(
-                        text = if (selectedArtist.value == null) stringResource(id = R.string.app_name)
+                        text = if (selectedArtist.value == null) stringResource(id = R.string.navigation_library)
                         else "${stringResource(id = R.string.global_artist)}: " +
                                 selectedArtist.value!!.name,
                         color = Black0,
