@@ -1,6 +1,5 @@
 package com.navarro.spotifygold.components.lazy.column
 
-import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,10 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.navarro.spotifygold.R
-import com.navarro.spotifygold.StaticToast
+import com.navarro.spotifygold.services.StaticToast
 import com.navarro.spotifygold.components.global.InteractableIconButton
 import com.navarro.spotifygold.entities.AudioDRO
+import com.navarro.spotifygold.services.MediaPlayerSingleton.mediaPlayer
 import com.navarro.spotifygold.services.getInfo
+import com.navarro.spotifygold.services.notification.createNotificationV1
 import com.navarro.spotifygold.ui.theme.Black0
 import com.navarro.spotifygold.ui.theme.Black20
 import com.navarro.spotifygold.ui.theme.Gold50
@@ -39,7 +40,6 @@ import java.io.FileNotFoundException
 
 @Composable
 fun SongsLazyColumn(
-    mediaPlayer: MediaPlayer,
     files: List<AudioDRO>,
     queue: MutableList<AudioDRO>,
     current: MutableState<AudioDRO>
@@ -65,6 +65,7 @@ fun SongsLazyColumn(
                             mediaPlayer.setDataSource(audioDRO.route)
                             mediaPlayer.prepare()
                             mediaPlayer.start()
+                            createNotificationV1(context, mediaPlayer, audioDRO)
                         } catch (e: FileNotFoundException) {
                             StaticToast.showToast(
                                 context.getString(R.string.error_file_not_found)

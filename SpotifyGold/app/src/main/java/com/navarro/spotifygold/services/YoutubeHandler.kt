@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Environment
 import android.util.Log
 import com.navarro.spotifygold.R
-import com.navarro.spotifygold.StaticToast
 import com.navarro.spotifygold.models.SearchCallBack
 import com.navarro.spotifygold.entities.ArtistDRO
 import com.navarro.spotifygold.entities.AudioDRO
@@ -25,12 +24,10 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.Json.Default.decodeFromString
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.util.regex.Pattern
 
 private const val localUrl = "${Constants.url}yt/"
 

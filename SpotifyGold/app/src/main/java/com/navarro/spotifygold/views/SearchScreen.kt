@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.navarro.spotifygold.R
-import com.navarro.spotifygold.StaticToast
+import com.navarro.spotifygold.services.StaticToast
 import com.navarro.spotifygold.components.search.QueryResultItem
 import com.navarro.spotifygold.components.search.SearchBar
 import com.navarro.spotifygold.models.SearchCallBack

@@ -82,7 +82,6 @@ fun SpotifyNavigation(
         }
         composable(Navigation.LIBRARY.name) {
             LibraryScreen(
-                mediaPlayer = mediaPlayer,
                 queue = queue,
                 current = current
             )

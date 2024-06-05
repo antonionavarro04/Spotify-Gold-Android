@@ -31,4 +31,12 @@ class AudioDRO(
             }
         }
     }
+
+    fun getSafeTitle(): String {
+        return this.metadata?.title ?: this.route.split("/").last().split(".").first()
+    }
+
+    fun getSafeArtist(): String {
+        return this.metadata?.author?.name ?: this.route.split(".").last()
+    }
 }

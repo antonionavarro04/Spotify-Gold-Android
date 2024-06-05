@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.platform.LocalContext
 import com.navarro.spotifygold.R
-import com.navarro.spotifygold.StaticToast
+import com.navarro.spotifygold.services.StaticToast
 import com.navarro.spotifygold.entities.ArtistDRO
 import com.navarro.spotifygold.entities.AudioDRO
 import com.navarro.spotifygold.entities.metadata.AuthorEntity

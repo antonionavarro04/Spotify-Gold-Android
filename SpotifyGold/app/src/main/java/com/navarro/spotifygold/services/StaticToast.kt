@@ -1,4 +1,4 @@
-package com.navarro.spotifygold
+package com.navarro.spotifygold.services
 
 import android.widget.Toast
 

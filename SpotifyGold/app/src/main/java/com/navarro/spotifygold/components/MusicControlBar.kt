@@ -33,11 +33,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.navarro.spotifygold.entities.AudioDRO
+import com.navarro.spotifygold.services.MediaPlayerSingleton.mediaPlayer
+import com.navarro.spotifygold.services.notification.createNotificationV1
 import com.navarro.spotifygold.ui.theme.Black30Transparent
 import com.navarro.spotifygold.ui.theme.Black80
 import com.navarro.spotifygold.ui.theme.Gold50
@@ -48,13 +51,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MusicControlBar(
-    mediaPlayer: MediaPlayer,
     queue: MutableList<AudioDRO>,
     current: MutableState<AudioDRO>
 ) {
+    val context = LocalContext.current
+
     val updateScope = rememberCoroutineScope() // Create a coroutine scope for the update
 
-    var isPlaying by remember { mutableStateOf(mediaPlayer.isPlaying) }
+    var isPlaying by remember { mutableStateOf(mediaPlayer!!.isPlaying) }
 
     val playedTime = remember { mutableStateOf(0) }
 
@@ -91,6 +95,10 @@ fun MusicControlBar(
                 false
             }
         }
+    }
+
+    LaunchedEffect(mediaPlayer.isPlaying) {
+        isPlaying = mediaPlayer.isPlaying
     }
 
     LaunchedEffect(Unit) {
@@ -199,8 +207,10 @@ fun MusicControlBar(
                     IconButton(onClick = {
                         if (mediaPlayer.isPlaying) {
                             mediaPlayer.pause()
+                            createNotificationV1(context, mediaPlayer, currentSong)
                         } else {
                             mediaPlayer.start()
+                            createNotificationV1(context, mediaPlayer, currentSong)
                         }
                         // Update the state to reflect the current playback status
                         isPlaying = mediaPlayer.isPlaying
