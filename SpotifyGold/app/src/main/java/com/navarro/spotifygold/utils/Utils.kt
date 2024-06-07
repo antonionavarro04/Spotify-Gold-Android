@@ -48,3 +48,19 @@ fun formatNumber(number: Long): String {
     }
 }
 
+/**
+ * Format time in milliseconds to a readable format
+ * @param time Time in ms
+ * @return Formatted time
+ */
+fun formatTime(time: Int): String {
+    val hours = time / 3600000
+    val minutes = (time % 3600000) / 60000
+    val seconds = (time % 60000) / 1000
+
+    return if (hours > 0) {
+        String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    } else {
+        String.format("%02d:%02d", minutes, seconds)
+    }
+}

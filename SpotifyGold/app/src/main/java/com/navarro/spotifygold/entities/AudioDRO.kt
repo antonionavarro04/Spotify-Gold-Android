@@ -1,6 +1,7 @@
 package com.navarro.spotifygold.entities
 
 import com.navarro.spotifygold.entities.metadata.MetadataEntity
+import com.navarro.spotifygold.utils.Constants
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -38,5 +39,9 @@ class AudioDRO(
 
     fun getSafeArtist(): String {
         return this.metadata?.author?.name ?: this.route.split(".").last()
+    }
+
+    fun getSafeThumbnail(): String {
+        return this.metadata?.thumbnail ?: Constants.defaultImage
     }
 }

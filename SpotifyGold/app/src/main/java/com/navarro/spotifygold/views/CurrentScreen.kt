@@ -1,11 +1,11 @@
 package com.navarro.spotifygold.views
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,9 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Loop
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PauseCircle
 import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.outlined.AddCircleOutline
@@ -46,6 +48,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.navarro.spotifygold.R
 import com.navarro.spotifygold.components.global.InteractableIconButton
+import com.navarro.spotifygold.components.global.ToggeableIconButton
 import com.navarro.spotifygold.entities.AudioDRO
 import com.navarro.spotifygold.services.MediaPlayerSingleton.mediaPlayer
 import com.navarro.spotifygold.services.MediaPlayerSingleton.next
@@ -53,11 +56,12 @@ import com.navarro.spotifygold.services.MediaPlayerSingleton.pause
 import com.navarro.spotifygold.services.MediaPlayerSingleton.play
 import com.navarro.spotifygold.services.MediaPlayerSingleton.playPause
 import com.navarro.spotifygold.services.MediaPlayerSingleton.previous
+import com.navarro.spotifygold.services.SettingsSingleton
 import com.navarro.spotifygold.services.StaticToast
 import com.navarro.spotifygold.ui.theme.Black0
 import com.navarro.spotifygold.ui.theme.Black80
 import com.navarro.spotifygold.ui.theme.Gold50
-import com.navarro.spotifygold.utils.Constants
+import com.navarro.spotifygold.utils.formatTime
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -114,7 +118,7 @@ fun CurrentScreen(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
-            .padding(5.dp)
+            .padding(5.dp, 5.dp, 5.dp, 30.dp)
     ) {
         Row( // Route
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -153,10 +157,7 @@ fun CurrentScreen(
                 .clip(RoundedCornerShape(10.dp))
         ) { // Image
             Image(
-                painter = rememberAsyncImagePainter(
-                    current.value.metadata?.thumbnail
-                        ?: Constants.defaultImage
-                ),
+                painter = rememberAsyncImagePainter(current.value.getSafeThumbnail()),
                 contentDescription = "Song Thumbnail",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -203,58 +204,96 @@ fun CurrentScreen(
                     StaticToast.showToast(context.getString(R.string.error_not_implemented_yet))
                 }
             }
-            Slider(
-                value = playedTime.value.toFloat(),
-                onValueChange = {
-                    pause()
-                    val longPos = it.toInt();
-                    mediaPlayer.seekTo(longPos)
-                },
-                onValueChangeFinished = {
-                    play()
-                },
-                valueRange = 0f..mediaPlayer.duration.toFloat(),
-                thumb = { },
-                colors = SliderDefaults.colors(
-                    activeTrackColor = Gold50,
-                    inactiveTrackColor = Black80
-                ),
-            )
-
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Slider(
+                    value = playedTime.value.toFloat(),
+                    onValueChange = {
+                        pause()
+                        val longPos = it.toInt()
+                        mediaPlayer.seekTo(longPos)
+                    },
+                    onValueChangeFinished = {
+                        play()
+                    },
+                    valueRange = 0f..mediaPlayer.duration.toFloat(),
+                    thumb = { },
+                    colors = SliderDefaults.colors(
+                        activeTrackColor = Gold50,
+                        inactiveTrackColor = Black80
+                    ),
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp, 0.dp)
+                ) {
+                    Text(
+                        text = formatTime(playedTime.value),
+                        fontSize = fontSize
+                    )
+                    Text(
+                        text = formatTime(mediaPlayer.duration),
+                        fontSize = fontSize
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.size(10.dp))
             Row(
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
             ) { // Play/Pause, Next/Previous, Shuffle/Repeat
                 val generalSize = 50.dp
-                InteractableIconButton(
-                    icon = Icons.Filled.SkipPrevious,
-                    size = generalSize
+                ToggeableIconButton(
+                    icon = Icons.Filled.Loop,
+                    condition = SettingsSingleton.loop.value,
                 ) {
-                    previous(queue, current)
+                    SettingsSingleton.loop.value = !SettingsSingleton.loop.value
                 }
-                IconButton(
-                    onClick = { playPause() },
-                    modifier = Modifier
-                        .size(70.dp)
-                        .padding(0.dp)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(25.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
+                    InteractableIconButton(
+                        icon = Icons.Filled.SkipPrevious,
+                        size = generalSize
+                    ) {
+                        previous(queue, current)
+                    }
+                    IconButton(
+                        onClick = { playPause() },
                         modifier = Modifier
+                            .size(70.dp)
                             .padding(0.dp)
-                            .size(70.dp),
-                        imageVector = if (isPlaying.value) Icons.Filled.PauseCircle
-                        else Icons.Filled.PlayCircle,
-                        contentDescription = "Play/Pause",
-                        tint = Black0
-                    )
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .padding(0.dp)
+                                .size(70.dp),
+                            imageVector = if (isPlaying.value) Icons.Filled.PauseCircle
+                            else Icons.Filled.PlayCircle,
+                            contentDescription = "Play/Pause",
+                            tint = Black0
+                        )
+                    }
+                    InteractableIconButton(
+                        icon = Icons.Filled.SkipNext,
+                        size = generalSize
+                    ) {
+                        next(queue, current)
+                    }
                 }
-                InteractableIconButton(
-                    icon = Icons.Filled.SkipNext,
-                    size = generalSize
+                ToggeableIconButton(
+                    icon = Icons.Filled.Shuffle,
+                    size = 30.dp,
+                    condition = SettingsSingleton.shuffle.value
                 ) {
-                    next(queue, current)
+                    SettingsSingleton.shuffle.value = !SettingsSingleton.shuffle.value
                 }
             }
         }

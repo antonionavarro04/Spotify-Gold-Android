@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -211,16 +212,14 @@ fun MusicControlBar(
                         )
                     }
                 }
-                Row( // Progress Bar
+                Box( // Progress Bar
                     Modifier
                         .fillMaxWidth(
                             (playedTime.value.toFloat() / mediaPlayer.duration.toFloat())
                         )
                         .height(2.dp)
                         .background(Gold50)
-                ) {
-
-                }
+                )
             }
         }
     }
