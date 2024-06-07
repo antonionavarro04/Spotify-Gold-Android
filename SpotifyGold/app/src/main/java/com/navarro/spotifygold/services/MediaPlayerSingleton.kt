@@ -74,7 +74,7 @@ object MediaPlayerSingleton {
      */
     private fun navigate(queue: MutableList<AudioDRO>, current: MutableState<AudioDRO>, step: Int) {
         when {
-            SettingsSingleton.loop.value -> play(current.value.route)
+            SettingsSingleton.loop.value -> { }
             SettingsSingleton.shuffle.value -> current.value = random(queue, current.value)
             else -> {
                 val currentIndex = queue.indexOf(current.value)
@@ -88,6 +88,7 @@ object MediaPlayerSingleton {
                 current.value = queue[newIndex]
             }
         }
+        play(current.value.route)
     }
 
     /**
