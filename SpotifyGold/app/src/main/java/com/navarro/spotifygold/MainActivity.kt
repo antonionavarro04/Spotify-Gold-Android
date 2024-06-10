@@ -1,5 +1,6 @@
 package com.navarro.spotifygold
 
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.widget.Toast
@@ -33,8 +34,12 @@ import com.navarro.spotifygold.navigation.Navigation
 import com.navarro.spotifygold.navigation.SpotifyNavigation
 import com.navarro.spotifygold.services.MediaPlayerSingleton.mediaPlayer
 import com.navarro.spotifygold.services.StaticToast
+import com.navarro.spotifygold.services.preferences.PreferencesKeys
+import com.navarro.spotifygold.services.preferences.PreferencesService
 import com.navarro.spotifygold.ui.theme.SpotifyGoldTheme
 import com.navarro.spotifygold.ui.theme.Transparent
+import com.navarro.spotifygold.views.LoginRegisterScreen
+import java.util.prefs.Preferences
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +55,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(), color = Color.Black
                 ) {
                     Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Color.Transparent)
@@ -81,6 +87,7 @@ fun MainScreen() {
         )
     ) }
     val currentDestination = remember { mutableStateOf("") }
+    val isLogged = remember { mutableStateOf(false) }
 
     mediaPlayer = MediaPlayer.create(context, R.raw.the_dark_of_the_matinee)
 
@@ -90,44 +97,57 @@ fun MainScreen() {
         }
     }
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        bottomBar = {
-            if (currentDestination.value != Navigation.CURRENT.name) {
-                Column(
-                    modifier = Modifier
-                        .padding(0.dp)
-                        .fillMaxWidth()
-                        .background(Color.Transparent)
-                ) {
-                    MusicControlBar(
-                        navController = navController,
-                        queue = queue,
-                        current = current,
-                    )
-                    BottomNavigationBar(
-                        navController = navController
-                    )
+    LaunchedEffect(Unit) {
+        PreferencesService.init(context);
+        val token = PreferencesService.getProperty(context, PreferencesKeys.TOKEN.key)
+        // Move to the login/register screen
+        isLogged.value = !token.isNullOrBlank()
+    }
+
+    if (!isLogged.value) {
+        LoginRegisterScreen(
+            isLogged = isLogged,
+        )
+    } else {
+        Scaffold(
+            containerColor = Color.Transparent,
+            bottomBar = {
+                if (currentDestination.value != Navigation.CURRENT.name) {
+                    Column(
+                        modifier = Modifier
+                            .padding(0.dp)
+                            .fillMaxWidth()
+                            .background(Color.Transparent)
+                    ) {
+                        MusicControlBar(
+                            navController = navController,
+                            queue = queue,
+                            current = current,
+                        )
+                        BottomNavigationBar(
+                            navController = navController
+                        )
+                    }
                 }
             }
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .padding(0.dp)
-                .fillMaxSize()
-        ) {
+        ) { padding ->
             Box(
                 modifier = Modifier
+                    .padding(0.dp)
                     .fillMaxSize()
-                    .background(Transparent)
-                    .align(Alignment.Center) // Align the inner Box to the center of the parent Box
-            )
-            SpotifyNavigation(
-                navController = navController,
-                queue = queue,
-                current = current
-            )
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Transparent)
+                        .align(Alignment.Center) // Align the inner Box to the center of the parent Box
+                )
+                SpotifyNavigation(
+                    navController = navController,
+                    queue = queue,
+                    current = current
+                )
+            }
         }
     }
 }

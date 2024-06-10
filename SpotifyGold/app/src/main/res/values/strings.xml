@@ -45,4 +45,18 @@
 
     <string name="playing_from">Playing From</string>
     <string name="error_server_unavailable">Server is either Shutdown or Unavailable</string>
+
+    <string name="login_title">Log in to Spotify Gold</string>
+    <string name="login_register_title">Register to Spotify Gold</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_button">Login</string>
+    <string name="login_register">Register</string>
+    <string name="login_forgot_password">Forgot Password</string>
+    <string name="login_email">Email</string>
+    <string name="login_username_or_email">Username or Email</string>
+    <string name="login_question_sign_up">Don\'t have an account?</string>
+    <string name="login_question_log_in">Already have an account?</string>
+    <string name="login_sign_up">Sign up for Spotify Gold Now</string>
+    <string name="login_log_in">Log in to Spotify Gold</string>
 </resources>
