@@ -148,9 +148,13 @@ fun SearchScreen() {
                     requestPermission = true
                 })
             }
+            item {
+                Spacer(modifier = Modifier.height(200.dp))
+            }
         }
         Box(
-            modifier = Modifier.height(200.dp)
+            modifier = Modifier
+                .height(200.dp)
                 .fillMaxWidth()
         )
     }

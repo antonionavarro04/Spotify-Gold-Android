@@ -33,6 +33,15 @@ import java.net.UnknownServiceException
 
 private const val localUrl = "${Constants.url}yt/"
 
+fun readMusic(
+    metadata: MetadataEntity
+): AudioDRO {
+    val storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+    val file = File(storageDir, "${Constants.prefix}${FileUtils.sanitizeString(metadata.id)}.mp3")
+
+    return AudioDRO(metadata, file.absolutePath, 0)
+}
+
 fun readMusicFolder(
     context: Context,
     artist: AuthorEntity? = null
@@ -55,7 +64,7 @@ fun readMusicFolder(
 
         if (isSPGAudio) {
             val id = it.name.substringAfter(Constants.prefix).substringBefore(".mp3")
-            metadata = db.metadataDao().getMetadata(id)
+            metadata = db.metadataRepo().getMetadata(id)
         }
 
         val newAudioDRO = AudioDRO(metadata, it.absolutePath, pos)
@@ -77,7 +86,7 @@ fun readMusicFolder(
 
 fun readArtists(context: Context): List<ArtistDRO> {
     val db = DatabaseProvider.getDatabase(context)
-    val authors = db.metadataDao().getAuthors()
+    val authors = db.metadataRepo().getAuthors()
     val listArtistDRO = mutableListOf<ArtistDRO>()
 
     // Get the directory for music files
@@ -87,7 +96,7 @@ fun readArtists(context: Context): List<ArtistDRO> {
     // Process each author
     authors.forEach { authorEntity ->
         val authorId = authorEntity.id
-        val listIds = db.metadataDao().getIdsByAuthorId(authorId).toMutableList()
+        val listIds = db.metadataRepo().getIdsByAuthorId(authorId).toMutableList()
         var count = 0
 
         // Process each id in listIds
@@ -158,7 +167,7 @@ fun search(
         try {
             val client = OkHttpClient()
             val request = Request.Builder()
-                .url("${localUrl}search?query=$query&maxResults=5")
+                .url("${localUrl}search?query=$query&maxResults=15")
                 .build()
 
             val response: Response
@@ -241,12 +250,21 @@ fun getInfo(
                 val metadata = json.decodeFromString<MetadataEntity>(responseData!!)
 
                 // Store in RoomDB
-                db.metadataDao().insertMetadata(metadata)
+                db.metadataRepo().insertMetadata(metadata)
             } else {
                 Log.e("Download", "Error fetching metadata: ${response.code}")
             }
         } catch (e: IOException) {
             Log.e("Download", "Error updating metadata: ${e.message}")
         }
+    }
+}
+
+fun getAllInfo(
+    context: Context,
+    ids: List<String>
+) {
+    ids.forEach {
+        getInfo(context, it)
     }
 }

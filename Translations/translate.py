@@ -32,10 +32,9 @@ for lang in langs:
                 pass
 
             try:
-                tranlation = translator.translate(text=e.text, dest=lang, src="en").text
+                tranlation = translator.translate(text=e.text, dest=lang, src="en").text.replace("'", "\\'")
             except:
                 print(f"Unknown Language: {lang}")
-                tranlation = e.text
             out = f"<string name=\"{e.attrib['name']}\">{tranlation}</string>"
             file.write(out + "\n")
 

@@ -10,6 +10,8 @@
 
     <string name="download_saved_successfully">Song Saved Successfully!!!</string>
 
+    <string name="library_download_all_metadata">Downloading all Files Metadata</string>
+
     <string name="global_song">Song</string>
     <string name="global_songs">Songs</string>
     <string name="global_artist">Artist</string>
@@ -41,4 +43,41 @@
     <string name="error_file_not_downloaded">File Not Downloaded Correctly</string>
     <string name="error_file_not_played">File Not Played</string>
     <string name="error_unknown">Unknown Error</string>
+
+    <string name="library_downloaded_songs">Downloaded Songs</string>
+
+    <string name="playing_from">Playing From</string>
+    <string name="error_server_unavailable">Server is either Shutdown or Unavailable</string>
+
+    <string name="login_title">Log in to Spotify Gold</string>
+    <string name="login_register_title">Register to Spotify Gold</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="login_button">Login</string>
+    <string name="login_register">Register</string>
+    <string name="login_forgot_password">Forgot Password</string>
+    <string name="login_email">Email</string>
+    <string name="login_username_or_email">Username or Email</string>
+    <string name="login_question_sign_up">Don\'t have an account?</string>
+    <string name="login_question_log_in">Already have an account?</string>
+    <string name="login_sign_up">Sign up for Spotify Gold Now</string>
+    <string name="login_log_in">Log in to Spotify Gold</string>
+    <string name="login_check_email">An email has been sent to your email address. Please check your email to activate your Account.</string>
+    <string name="login_inavlid_credentials">Invalid Credentials</string>
+
+    <string name="app_permissions_title">File Access Permissions</string>
+    <string name="app_permissions_message">Please allow the app to access your files to download and save songs. Downloaded songs will be under your phone\'s Music Folder</string>
+    <string name="app_permissions_button">Allow</string>
+
+    <string name="home_most_played">Most Played</string>
+    <string name="home_jump_back_in">Jump Back In</string>
+    <string name="home_podcasts">Podcasts</string>
+    <string name="home_made_for_you">Made For You</string>
+    <string name="global_podcast">Podcast</string>
+    <string name="global_details">Details</string>
+    <string name="global_ok">Ok</string>
+    <string name="global_cancel">Cancel</string>
+    <string name="global_delete_song">Delete Song</string>
+    <string name="global_delete_song_subtitle">Are you sure you want to delete this song?</string>
+    <string name="global_add_to_playlist">Add to Playlist</string>
 </resources>

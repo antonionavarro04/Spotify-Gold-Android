@@ -11,27 +11,23 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.navarro.spotifygold.components.global.IconInfo
 import com.navarro.spotifygold.entities.DtoResultEntity
 import com.navarro.spotifygold.utils.formatLikes
 import com.navarro.spotifygold.utils.formatTime
+import com.navarro.spotifygold.utils.formatTimeSeconds
 import com.navarro.spotifygold.utils.formatViews
 
 @Composable
@@ -64,11 +60,7 @@ fun QueryResultItem(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = if (audioInfo.title.lowercase().contains("sigma")) {
-                    "JA🍷🗿・${audioInfo.title}"
-                } else {
-                    audioInfo.title
-                },
+                text = audioInfo.title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -78,7 +70,7 @@ fun QueryResultItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "${formatTime(audioInfo.duration)}・${audioInfo.authorName}",
+                    text = "${formatTimeSeconds(audioInfo.duration)}・${audioInfo.authorName}",
                     color = Color.LightGray,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

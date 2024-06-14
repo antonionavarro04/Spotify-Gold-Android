@@ -1,8 +1,18 @@
 package com.navarro.spotifygold.services
 
-import android.media.MediaPlayer
+import android.content.Context
+import androidx.annotation.OptIn
 import androidx.compose.runtime.MutableState
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaSession
 import com.navarro.spotifygold.entities.AudioDRO
+import com.navarro.spotifygold.services.room.DatabaseProvider
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 private enum class MediaNavigationModes(val value: Int) {
     NEXT(1),
@@ -10,7 +20,9 @@ private enum class MediaNavigationModes(val value: Int) {
 }
 
 object MediaPlayerSingleton {
-    var mediaPlayer: MediaPlayer = MediaPlayer()
+
+    lateinit var mediaPlayer: ExoPlayer
+    lateinit var mediaSession: MediaSession
 
     /**
      * Play or pause the current media
@@ -19,7 +31,7 @@ object MediaPlayerSingleton {
         if (mediaPlayer.isPlaying) {
             mediaPlayer.pause()
         } else {
-            mediaPlayer.start()
+            mediaPlayer.play()
         }
     }
 
@@ -27,18 +39,36 @@ object MediaPlayerSingleton {
      * Play the current media
      */
     fun play() {
-        mediaPlayer.start()
+        mediaPlayer.play()
     }
 
     /**
      * Play a new media
-     * @param uri Media URI
+     * @param audioDRO Audio to be Played
      */
-    fun play(uri: String) {
-        mediaPlayer.reset()
-        mediaPlayer.setDataSource(uri)
+    @OptIn(UnstableApi::class)
+    @kotlin.OptIn(DelicateCoroutinesApi::class)
+    fun play(
+        context: Context,
+        audioDRO: AudioDRO
+    ) {
+        val uri = audioDRO.route
+
+        val mediaMetadata: MediaMetadata = MediaMetadata.Builder()
+            .setTitle(audioDRO.getSafeTitle())
+            .setArtist(audioDRO.getSafeArtist())
+            .build()
+        val mediaItem = MediaItem.Builder()
+            .setUri(uri)
+            .setMediaMetadata(mediaMetadata)
+            .build()
+        mediaPlayer.setMediaItem(mediaItem)
         mediaPlayer.prepare()
-        mediaPlayer.start()
+        mediaPlayer.play()
+
+        GlobalScope.launch {
+            incrementPlayedTimes(context, audioDRO)
+        }
     }
 
     /**
@@ -53,8 +83,14 @@ object MediaPlayerSingleton {
      * @param queue List of media
      * @param current Current media
      */
-    fun next(queue: MutableList<AudioDRO>, current: MutableState<AudioDRO>) {
-        navigate(queue, current, MediaNavigationModes.NEXT.value)
+    fun next(
+        context: Context,
+        queue: MutableList<AudioDRO>, current: MutableState<AudioDRO>
+    ) {
+        navigate(
+            context,
+            queue, current, MediaNavigationModes.NEXT.value
+        )
     }
 
     /**
@@ -62,8 +98,14 @@ object MediaPlayerSingleton {
      * @param queue List of media
      * @param current Current media
      */
-    fun previous(queue: MutableList<AudioDRO>, current: MutableState<AudioDRO>) {
-        navigate(queue, current, MediaNavigationModes.PREVIOUS.value)
+    fun previous(
+        context: Context,
+        queue: MutableList<AudioDRO>, current: MutableState<AudioDRO>
+    ) {
+        navigate(
+            context,
+            queue, current, MediaNavigationModes.PREVIOUS.value
+        )
     }
 
     /**
@@ -72,10 +114,14 @@ object MediaPlayerSingleton {
      * @param current Current media
      * @param step Step to navigate
      */
-    private fun navigate(queue: MutableList<AudioDRO>, current: MutableState<AudioDRO>, step: Int) {
+    private fun navigate(
+        context: Context,
+        queue: MutableList<AudioDRO>,
+        current: MutableState<AudioDRO>,
+        step: Int
+    ) {
         when {
-            SettingsSingleton.loop.value -> { }
-            SettingsSingleton.shuffle.value -> current.value = random(queue, current.value)
+            SettingsSingleton.loop.value -> {}
             else -> {
                 val currentIndex = queue.indexOf(current.value)
                 val newIndex = (currentIndex + step).let {
@@ -88,7 +134,10 @@ object MediaPlayerSingleton {
                 current.value = queue[newIndex]
             }
         }
-        play(current.value.route)
+        play(
+            context,
+            current.value
+        )
     }
 
     /**
@@ -97,11 +146,24 @@ object MediaPlayerSingleton {
      * @param current Current media
      * @return Random media
      */
+    @Deprecated("Used .shuffle of Lists instead")
     private fun random(queue: MutableList<AudioDRO>, current: AudioDRO): AudioDRO {
         var newValue = current
         while (newValue == current) {
             newValue = queue.random()
         }
         return newValue
+    }
+
+    private fun incrementPlayedTimes(
+        context: Context,
+        audioDRO: AudioDRO
+    ) {
+        val db = DatabaseProvider.getDatabase(context)
+        if (audioDRO.metadata != null) {
+            val metadata = db.metadataRepo().getMetadata(audioDRO.metadata!!.id)
+            metadata.played++
+            db.metadataRepo().insertMetadata(metadata)
+        }
     }
 }

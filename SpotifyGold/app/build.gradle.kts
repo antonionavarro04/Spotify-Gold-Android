@@ -56,7 +56,7 @@ android {
 dependencies {
     val roomVersion = "2.6.1"
     val navVersion = "2.7.7"
-    val coilVersion= "2.6.0"
+    val coilVersion = "2.6.0"
     val iconsVersion = "1.6.7"
 
     implementation("androidx.core:core-ktx:1.13.1")
@@ -85,6 +85,7 @@ dependencies {
 
     // Coil (Image loading)
     implementation("io.coil-kt:coil-compose:$coilVersion")
+    implementation("io.coil-kt:coil-gif:$coilVersion")
 
     // Icons
     implementation("androidx.compose.material:material-icons-extended-android:$iconsVersion")
@@ -103,6 +104,9 @@ dependencies {
     implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
     kapt("androidx.hilt:hilt-compiler:1.2.0")
 
-    // Media
-    implementation("androidx.media:media:1.7.0")
+    // Media3 && MediaSession
+    val media3Version = "1.3.1"
+
+    implementation("androidx.media3:media3-exoplayer:$media3Version")
+    implementation("androidx.media3:media3-session:$media3Version")
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import com.navarro.spotifygold.services.StaticToast
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.File
@@ -58,13 +59,21 @@ fun RequestStoragePermission(
         LaunchedEffect(Unit) {
             if (ContextCompat.checkSelfPermission(
                     context,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ) != PermissionChecker.PERMISSION_GRANTED
             ) {
-                requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             } else {
                 onPermissionResult(true)
             }
         }
+    }
+}
+
+fun seeIfHasPermission(): Boolean {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        return Environment.isExternalStorageManager()
+    } else {
+        return false
     }
 }

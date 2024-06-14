@@ -18,8 +18,10 @@ data class MetadataEntity(
     val uploadAt: String,
     val duration: Long,
     @Embedded(prefix = "engagement_") val engagement: EngagementEntity,
-    var thumbnail: String = ""
+    var thumbnail: String = "",
+    var played: Long = 0,
 ) {
-    @Ignore
-    var url: String = "https://www.youtube.com/watch?v=$id"
+    fun getLink(): String {
+        return "https://www.youtube.com/watch?v=$id"
+    }
 }

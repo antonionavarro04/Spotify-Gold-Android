@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.navarro.spotifygold.R
-import com.navarro.spotifygold.services.StaticToast
 import com.navarro.spotifygold.components.global.InteractableIconButton
 import com.navarro.spotifygold.components.lazy.column.ArtistsLazyColumn
 import com.navarro.spotifygold.components.lazy.column.SongsLazyColumn
@@ -42,11 +41,12 @@ import com.navarro.spotifygold.entities.AudioDRO
 import com.navarro.spotifygold.entities.metadata.AuthorEntity
 import com.navarro.spotifygold.models.LibraryHandlers
 import com.navarro.spotifygold.models.LibraryModes
+import com.navarro.spotifygold.services.StaticToast
+import com.navarro.spotifygold.services.getAllInfo
 import com.navarro.spotifygold.ui.theme.Black0
 import com.navarro.spotifygold.utils.Constants
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun LibraryScreen(
     queue: MutableList<AudioDRO>,
     current: MutableState<AudioDRO>
@@ -114,6 +114,16 @@ fun LibraryScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    InteractableIconButton(icon = Icons.Filled.Download, onClick = {
+                        StaticToast.showToast(context.getString(R.string.library_download_all_metadata))
+                        val ids = filesFiltered.map {
+                            it.route.split("/").last().split(".")[1]
+                        }
+                        getAllInfo(context, ids)
+
+                        mode.value = LibraryModes.ARTISTS
+                        mode.value = LibraryModes.SONGS
+                    })
                     InteractableIconButton(icon = Icons.Filled.Search, onClick = {
                         searchMode.value = true
                     })
@@ -123,7 +133,6 @@ fun LibraryScreen(
                 }
             }
         }
-
         LibraryNavigationBar(
             viewMode = mode
         )

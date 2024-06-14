@@ -2,11 +2,17 @@ package com.navarro.spotifygold.services.preferences
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.navarro.spotifygold.services.StaticToast
+import seeIfHasPermission
 import java.io.File
 import java.util.Properties
 
 object PreferencesService {
+
+    val hasAcceptedPermissions = mutableStateOf(seeIfHasPermission())
+    val isLogged = mutableStateOf(false)
 
     private const val FILE_NAME = "spotifygold.properties"
 
@@ -66,8 +72,4 @@ object PreferencesService {
         properties.setProperty(key, value)
         setProperties(context, properties)
     }
-}
-
-enum class PreferencesKeys(val key: String) {
-    TOKEN("token")
 }

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="navigation_home">بيت</string>
     <string name="navigation_library">مكتبة</string>
@@ -6,6 +5,7 @@
     <string name="search_searchbox_placeholder">ماذا تريد أن تستمع إليه؟</string>
     <string name="search_searchbox_no_results">لم يتم العثور على نتائج</string>
     <string name="download_saved_successfully">تم حفظ الأغنية بنجاح!!!</string>
+    <string name="library_download_all_metadata">تنزيل كافة البيانات الوصفية للملفات</string>
     <string name="global_song">أغنية</string>
     <string name="global_songs">أغاني</string>
     <string name="global_artist">فنان</string>
@@ -36,5 +36,36 @@
     <string name="error_file_not_downloaded">لم يتم تنزيل الملف بشكل صحيح</string>
     <string name="error_file_not_played">لم يتم تشغيل الملف</string>
     <string name="error_unknown">خطأ غير معروف</string>
-
+    <string name="library_downloaded_songs">الأغاني التي تم تنزيلها</string>
+    <string name="playing_from">اللعب من</string>
+    <string name="error_server_unavailable">الخادم إما مغلق أو غير متاح</string>
+    <string name="login_title">قم بتسجيل الدخول إلى سبوتيفي جولد</string>
+    <string name="login_register_title">قم بالتسجيل في سبوتيفي جولد</string>
+    <string name="login_username">اسم المستخدم</string>
+    <string name="login_password">كلمة المرور</string>
+    <string name="login_button">تسجيل الدخول</string>
+    <string name="login_register">يسجل</string>
+    <string name="login_forgot_password">هل نسيت كلمة السر</string>
+    <string name="login_email">بريد إلكتروني</string>
+    <string name="login_username_or_email">اسم المستخدم أو البريد الالكتروني</string>
+    <string name="login_question_sign_up">ليس لديك حساب؟</string>
+    <string name="login_question_log_in">هل لديك حساب؟</string>
+    <string name="login_sign_up">قم بالتسجيل في سبوتيفي جولد الآن</string>
+    <string name="login_log_in">قم بتسجيل الدخول إلى سبوتيفي جولد</string>
+    <string name="login_check_email">تم إرسال بريد إلكتروني إلى عنوان بريدك الإلكتروني. يرجى التحقق من بريدك الإلكتروني لتفعيل حسابك.</string>
+    <string name="login_inavlid_credentials">بيانات الاعتماد غير صالحة</string>
+    <string name="app_permissions_title">أذونات الوصول إلى الملفات</string>
+    <string name="app_permissions_message">يرجى السماح للتطبيق بالوصول إلى ملفاتك لتنزيل الأغاني وحفظها. ستكون الأغاني التي تم تنزيلها ضمن مجلد الموسيقى الخاص بهاتفك</string>
+    <string name="app_permissions_button">يسمح</string>
+    <string name="home_most_played">الأكثر لعبا</string>
+    <string name="home_jump_back_in">القفز مرة أخرى</string>
+    <string name="home_podcasts">المدونة الصوتية</string>
+    <string name="home_made_for_you">جعل لكم</string>
+    <string name="global_podcast">تدوين صوتي</string>
+    <string name="global_details">تفاصيل</string>
+    <string name="global_ok">نعم</string>
+    <string name="global_cancel">يلغي</string>
+    <string name="global_delete_song">حذف الأغنية</string>
+    <string name="global_delete_song_subtitle">هل أنت متأكد أنك تريد حذف هذه الأغنية؟</string>
+    <string name="global_add_to_playlist">أضف إلى قائمة التشغيل</string>
 </resources>

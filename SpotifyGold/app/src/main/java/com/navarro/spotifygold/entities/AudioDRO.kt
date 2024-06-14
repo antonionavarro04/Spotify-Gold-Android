@@ -44,4 +44,27 @@ class AudioDRO(
     fun getSafeThumbnail(): String {
         return this.metadata?.thumbnail ?: Constants.defaultImage
     }
+
+    fun getSafeViews(): Long {
+        return this.metadata?.engagement?.views ?: 0
+    }
+
+    fun getSafeLikes(): Long {
+        return this.metadata?.engagement?.likes ?: 0
+    }
+
+    fun getSafeUploadAt(): String {
+        val date = this.metadata?.uploadAt ?: ""
+        return date.ifEmpty {
+            SimpleDateFormat("M/d/yyyy h:mm:ss a Z", Locale.US).format(this.uploadDate)
+        }
+    }
+
+    fun getSafeId(): String {
+        return this.metadata?.id ?: this.route
+    }
+
+    fun getSafeLink(): String {
+        return this.metadata?.getLink() ?: "https://es.wikipedia.org/wiki/HTTP_404"
+    }
 }

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="navigation_home">家</string>
     <string name="navigation_library">図書館</string>
@@ -6,6 +5,7 @@
     <string name="search_searchbox_placeholder">何を聞きたいですか？</string>
     <string name="search_searchbox_no_results">結果が見つかりません</string>
     <string name="download_saved_successfully">曲が保存されました!!!</string>
+    <string name="library_download_all_metadata">すべてのファイルのメタデータをダウンロードする</string>
     <string name="global_song">歌</string>
     <string name="global_songs">曲</string>
     <string name="global_artist">アーティスト</string>
@@ -36,4 +36,36 @@
     <string name="error_file_not_downloaded">ファイルが正しくダウンロードされない</string>
     <string name="error_file_not_played">ファイルが再生されない</string>
     <string name="error_unknown">不明なエラー</string>
+    <string name="library_downloaded_songs">ダウンロードした曲</string>
+    <string name="playing_from">からの再生</string>
+    <string name="error_server_unavailable">サーバーがシャットダウンしているか使用不可です</string>
+    <string name="login_title">Spotify ゴールドにログインする</string>
+    <string name="login_register_title">Spotify ゴールドに登録する</string>
+    <string name="login_username">ユーザー名</string>
+    <string name="login_password">パスワード</string>
+    <string name="login_button">ログイン</string>
+    <string name="login_register">登録する</string>
+    <string name="login_forgot_password">パスワードをお忘れですか</string>
+    <string name="login_email">Eメール</string>
+    <string name="login_username_or_email">ユーザー名または電子メール</string>
+    <string name="login_question_sign_up">アカウントをお持ちでない場合は、</string>
+    <string name="login_question_log_in">すでにアカウントをお持ちですか？</string>
+    <string name="login_sign_up">今すぐ Spotify ゴールドにサインアップ</string>
+    <string name="login_log_in">Spotify ゴールドにログインする</string>
+    <string name="login_check_email">あなたのメールアドレスにメールが送信されました。メールを確認してアカウントを有効にしてください。</string>
+    <string name="login_inavlid_credentials">無効な資格情報</string>
+    <string name="app_permissions_title">ファイルアクセス許可</string>
+    <string name="app_permissions_message">曲をダウンロードして保存するには、アプリがファイルにアクセスできるようにしてください。ダウンロードした曲は携帯電話のミュージック フォルダーに保存されます</string>
+    <string name="app_permissions_button">許可する</string>
+    <string name="home_most_played">最もプレイされた</string>
+    <string name="home_jump_back_in">ジャンプバックイン</string>
+    <string name="home_podcasts">ポッドキャスト</string>
+    <string name="home_made_for_you">あなたのためにつくった</string>
+    <string name="global_podcast">ポッドキャスト</string>
+    <string name="global_details">詳細</string>
+    <string name="global_ok">わかりました</string>
+    <string name="global_cancel">キャンセル</string>
+    <string name="global_delete_song">曲の削除</string>
+    <string name="global_delete_song_subtitle">この曲を削除してもよろしいですか?</string>
+    <string name="global_add_to_playlist">プレイリストに追加する</string>
 </resources>

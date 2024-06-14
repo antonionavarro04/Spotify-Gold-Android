@@ -16,15 +16,27 @@ fun hasManageExternalStoragePermission(context: Context): Boolean {
     }
 }
 
-fun formatTime(seconds: Long): String {
-    val hours = seconds / 3600
-    val minutes = (seconds % 3600) / 60
-    val remainingSeconds = seconds % 60
+fun formatTimeMillis(milliseconds: Long): String {
+    val hours = (milliseconds / (1000 * 60 * 60)).toInt()
+    val minutes = ((milliseconds % (1000 * 60 * 60)) / (1000 * 60)).toInt()
+    val seconds = ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000).toInt()
 
     return if (hours > 0) {
-        String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds)
+        String.format("%02d:%02d:%02d", hours, minutes, seconds)
     } else {
-        String.format("%02d:%02d", minutes, remainingSeconds)
+        String.format("%02d:%02d", minutes, seconds)
+    }
+}
+
+fun formatTimeSeconds(seconds: Long): String {
+    val hours = (seconds / 3600).toInt()
+    val minutes = ((seconds % 3600) / 60).toInt()
+    val secs = (seconds % 60).toInt()
+
+    return if (hours > 0) {
+        String.format("%02d:%02d:%02d", hours, minutes, secs)
+    } else {
+        String.format("%02d:%02d", minutes, secs)
     }
 }
 
@@ -63,4 +75,13 @@ fun formatTime(time: Int): String {
     } else {
         String.format("%02d:%02d", minutes, seconds)
     }
+}
+
+fun randomString(length: Int): String {
+    val charset = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+    return List(length) { charset.random() }.joinToString("")
+}
+
+fun addDotsToNumber(number: Long): String {
+    return number.toString().replace(Regex("(\\d)(?=(\\d{3})+\$)"), "\$1.")
 }

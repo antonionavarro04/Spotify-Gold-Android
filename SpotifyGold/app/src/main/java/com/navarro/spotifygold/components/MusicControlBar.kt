@@ -1,6 +1,6 @@
 package com.navarro.spotifygold.components
 
-import android.media.MediaPlayer
+import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,6 +40,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.navarro.spotifygold.entities.AudioDRO
@@ -48,7 +50,6 @@ import com.navarro.spotifygold.services.MediaPlayerSingleton.mediaPlayer
 import com.navarro.spotifygold.services.MediaPlayerSingleton.next
 import com.navarro.spotifygold.services.MediaPlayerSingleton.playPause
 import com.navarro.spotifygold.services.MediaPlayerSingleton.previous
-import com.navarro.spotifygold.services.notification.createNotificationV1
 import com.navarro.spotifygold.ui.theme.Black30Transparent
 import com.navarro.spotifygold.ui.theme.Black80
 import com.navarro.spotifygold.ui.theme.Gold50
@@ -69,30 +70,38 @@ fun MusicControlBar(
 
     var isPlaying by remember { mutableStateOf(mediaPlayer.isPlaying) }
 
-    val playedTime = remember { mutableStateOf(0) }
+    val playedTime = remember { mutableStateOf(0L) }
 
     LaunchedEffect(mediaPlayer) {
-        mediaPlayer.setOnCompletionListener {
-            isPlaying = mediaPlayer.isPlaying
-
-            next(queue, current)
-            createNotificationV1(context, mediaPlayer, current.value)
-        }
-        mediaPlayer.setOnPreparedListener {
-            isPlaying = mediaPlayer.isPlaying
-        }
-
-        mediaPlayer.setOnInfoListener { _, what, _ ->
-            if (
-                what == MediaPlayer.MEDIA_INFO_BUFFERING_START ||
-                what == MediaPlayer.MEDIA_INFO_BUFFERING_END
-            ) {
-                isPlaying = mediaPlayer.isPlaying
-                true
-            } else {
-                false
+        mediaPlayer.addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(state: Int) {
+                isPlaying = state == Player.STATE_READY && mediaPlayer.isPlaying
             }
-        }
+
+            @OptIn(UnstableApi::class)
+            @Deprecated("Deprecated in Java")
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                isPlaying = playbackState == Player.STATE_READY && playWhenReady
+
+                when (playbackState) {
+                    Player.STATE_ENDED -> {
+                        next(context, queue, current)
+                    }
+
+                    Player.STATE_BUFFERING -> {
+                        // TODO()
+                    }
+
+                    Player.STATE_IDLE -> {
+                        // TODO()
+                    }
+
+                    Player.STATE_READY -> {
+                        // TODO()
+                    }
+                }
+            }
+        })
     }
 
     LaunchedEffect(mediaPlayer.isPlaying) {
@@ -133,11 +142,9 @@ fun MusicControlBar(
                             },
                             onDragEnd = {
                                 if (totalDragAmount < -100) { // Swipe left
-                                    next(queue, current)
-                                    createNotificationV1(context, mediaPlayer, current.value)
+                                    next(context, queue, current)
                                 } else if (totalDragAmount > 100) { // Swipe right
-                                    previous(queue, current)
-                                    createNotificationV1(context, mediaPlayer, current.value)
+                                    previous(context, queue, current)
                                 }
 
                                 totalDragAmount = 0f
@@ -197,7 +204,6 @@ fun MusicControlBar(
                     }
                     IconButton(onClick = {
                         playPause()
-                        createNotificationV1(context, mediaPlayer, currentSong)
 
                         isPlaying = mediaPlayer.isPlaying
                     }) {

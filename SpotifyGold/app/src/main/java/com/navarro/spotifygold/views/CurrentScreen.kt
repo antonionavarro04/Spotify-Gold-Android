@@ -61,7 +61,7 @@ import com.navarro.spotifygold.services.StaticToast
 import com.navarro.spotifygold.ui.theme.Black0
 import com.navarro.spotifygold.ui.theme.Black80
 import com.navarro.spotifygold.ui.theme.Gold50
-import com.navarro.spotifygold.utils.formatTime
+import com.navarro.spotifygold.utils.formatTimeMillis
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -81,7 +81,7 @@ fun CurrentScreen(
 
     val from = remember { mutableStateOf("") }
 
-    val playedTime = remember { mutableStateOf(0) }
+    val playedTime = remember { mutableStateOf(0L) }
 
     val isPlaying = remember { mutableStateOf(false) }
 
@@ -208,16 +208,20 @@ fun CurrentScreen(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Slider(
-                    value = playedTime.value.toFloat(),
+                    value = try {
+                        playedTime.value.toFloat()
+                    } catch (e: IllegalArgumentException) {
+                        0.0f
+                    },
                     onValueChange = {
                         pause()
-                        val longPos = it.toInt()
+                        val longPos = it.toLong()
                         mediaPlayer.seekTo(longPos)
                     },
                     onValueChangeFinished = {
                         play()
                     },
-                    valueRange = 0f..mediaPlayer.duration.toFloat(),
+                    valueRange = 0f..(mediaPlayer.duration.takeIf { it > 0 }?.toFloat() ?: 0.0f),
                     thumb = { },
                     colors = SliderDefaults.colors(
                         activeTrackColor = Gold50,
@@ -232,11 +236,11 @@ fun CurrentScreen(
                         .padding(8.dp, 0.dp)
                 ) {
                     Text(
-                        text = formatTime(playedTime.value),
+                        text = formatTimeMillis(playedTime.value),
                         fontSize = fontSize
                     )
                     Text(
-                        text = formatTime(mediaPlayer.duration),
+                        text = formatTimeMillis(mediaPlayer.duration),
                         fontSize = fontSize
                     )
                 }
@@ -263,7 +267,7 @@ fun CurrentScreen(
                         icon = Icons.Filled.SkipPrevious,
                         size = generalSize
                     ) {
-                        previous(queue, current)
+                        previous(context, queue, current)
                     }
                     IconButton(
                         onClick = { playPause() },
@@ -285,7 +289,7 @@ fun CurrentScreen(
                         icon = Icons.Filled.SkipNext,
                         size = generalSize
                     ) {
-                        next(queue, current)
+                        next(context, queue, current)
                     }
                 }
                 ToggeableIconButton(
@@ -294,6 +298,10 @@ fun CurrentScreen(
                     condition = SettingsSingleton.shuffle.value
                 ) {
                     SettingsSingleton.shuffle.value = !SettingsSingleton.shuffle.value
+
+                    if (SettingsSingleton.shuffle.value) {
+                        queue.shuffle()
+                    }
                 }
             }
         }
