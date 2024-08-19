@@ -243,6 +243,8 @@ fun getInfo(
                 .url("${localUrl}$id/info")
                 .build()
 
+            Log.d("Download", "Fetching metadata for ${request.url}")
+
             val response = client.newCall(request).execute()
             if (response.isSuccessful) {
                 val responseData = response.body?.string()
